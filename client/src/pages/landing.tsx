@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { FloatingShapes } from "@/components/landing/FloatingShapes";
 import { FeatureCard } from "@/components/landing/FeatureCard";
 import { MicroConversation } from "@/components/landing/MicroConversation";
-import { ContactForm } from "@/components/landing/ContactForm";
+import { WebsitePreview } from "@/components/landing/WebsitePreview";
 import { translations, Lang } from "@/lib/i18n";
 
 export default function Landing() {
@@ -111,21 +111,9 @@ export default function Landing() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.2 }}
-                className="mt-10 flex flex-wrap items-center gap-4"
+                className="mt-10"
               >
-                <Button
-                  className="h-14 rounded-none bg-black px-10 text-[15px] font-black uppercase tracking-widest text-white hover:bg-black/90"
-                  onClick={() => scrollTo("device")}
-                >
-                  {t.hero.cta_primary}
-                </Button>
-                <Button
-                  variant="outline"
-                  className="h-14 rounded-none border-2 border-black bg-transparent px-10 text-[15px] font-black uppercase tracking-widest text-black hover:bg-black/5"
-                  onClick={() => scrollTo("cta")}
-                >
-                  {t.hero.cta_secondary}
-                </Button>
+                 <WebsitePreview />
               </motion.div>
 
               <div className="mt-12 flex flex-wrap items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-black/40">
