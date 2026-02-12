@@ -17,6 +17,7 @@ type FormData = z.infer<typeof formSchema>;
 export function WebsitePreview() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -45,10 +46,10 @@ export function WebsitePreview() {
       
       if (result.success) {
         toast({
-          title: "Analyzing website...",
-          description: "Redirecting to your custom preview.",
+          title: "Analysis complete",
+          description: "Your custom preview is ready.",
         });
-        window.location.href = result.previewUrl;
+        setPreviewUrl(result.previewUrl);
       } else {
         throw new Error(result.error || 'Failed to create preview');
       }
@@ -66,49 +67,75 @@ export function WebsitePreview() {
 
   return (
     <div className="w-full max-w-xl mx-auto">
-      <form onSubmit={form.handleSubmit(onSubmit)} className="relative flex items-stretch border-2 border-black p-1 bg-white">
-        <div className="relative flex-grow">
-          <Input
-            {...form.register("url")}
-            placeholder="Enter your website URL (e.g., https://nike.com)"
-            className="h-14 border-none bg-transparent px-4 text-[16px] font-medium placeholder:text-black/40 focus-visible:ring-0 rounded-none w-full"
-            disabled={isLoading}
-          />
+      {previewUrl ? (
+        <div className="flex flex-col items-center justify-center p-6 border-2 border-black bg-white gap-4">
+          <div className="text-[15px] font-bold text-black uppercase tracking-widest">
+            Preview Ready
+          </div>
+          <Button
+            onClick={() => window.open(previewUrl, '_blank')}
+            className="h-14 rounded-none bg-black px-8 text-[15px] font-black uppercase tracking-widest text-white hover:bg-black/90 transition-all w-full"
+          >
+            Click Here for Preview <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            onClick={() => {
+              setPreviewUrl(null);
+              form.reset();
+            }}
+            className="text-[11px] font-bold uppercase tracking-widest text-black/40 hover:text-black"
+          >
+            Try another website
+          </Button>
         </div>
-        <Button
-          type="submit"
-          disabled={isLoading}
-          className="h-14 rounded-none bg-black px-8 text-[15px] font-black uppercase tracking-widest text-white hover:bg-black/90 transition-all"
-        >
-          {isLoading ? (
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 bg-white animate-bounce [animation-delay:-0.3s]"></span>
-              <span className="h-2 w-2 bg-white animate-bounce [animation-delay:-0.15s]"></span>
-              <span className="h-2 w-2 bg-white animate-bounce"></span>
+      ) : (
+        <>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="relative flex items-stretch border-2 border-black p-1 bg-white">
+            <div className="relative flex-grow">
+              <Input
+                {...form.register("url")}
+                placeholder="Enter your website URL (e.g., https://nike.com)"
+                className="h-14 border-none bg-transparent px-4 text-[16px] font-medium placeholder:text-black/40 focus-visible:ring-0 rounded-none w-full"
+                disabled={isLoading}
+              />
             </div>
-          ) : (
-            <span className="flex items-center gap-2">
-              Try It Free <ArrowRight className="h-4 w-4" />
-            </span>
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="h-14 rounded-none bg-black px-8 text-[15px] font-black uppercase tracking-widest text-white hover:bg-black/90 transition-all"
+            >
+              {isLoading ? (
+                <div className="flex items-center gap-2">
+                  <span className="h-2 w-2 bg-white animate-bounce [animation-delay:-0.3s]"></span>
+                  <span className="h-2 w-2 bg-white animate-bounce [animation-delay:-0.15s]"></span>
+                  <span className="h-2 w-2 bg-white animate-bounce"></span>
+                </div>
+              ) : (
+                <span className="flex items-center gap-2">
+                  Try It Free <ArrowRight className="h-4 w-4" />
+                </span>
+              )}
+            </Button>
+          </form>
+          
+          {form.formState.errors.url && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-2 text-[13px] font-bold text-red-500 uppercase tracking-wide"
+            >
+              {form.formState.errors.url.message}
+            </motion.div>
           )}
-        </Button>
-      </form>
-      
-      {form.formState.errors.url && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-2 text-[13px] font-bold text-red-500 uppercase tracking-wide"
-        >
-          {form.formState.errors.url.message}
-        </motion.div>
+          
+          <div className="mt-4 flex items-center justify-center gap-6 text-[11px] font-bold uppercase tracking-widest text-black/40">
+            <span>No credit card required</span>
+            <span>•</span>
+            <span>Instant Preview</span>
+          </div>
+        </>
       )}
-      
-      <div className="mt-4 flex items-center justify-center gap-6 text-[11px] font-bold uppercase tracking-widest text-black/40">
-        <span>No credit card required</span>
-        <span>•</span>
-        <span>Instant Preview</span>
-      </div>
     </div>
   );
 }
