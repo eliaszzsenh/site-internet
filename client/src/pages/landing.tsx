@@ -6,6 +6,7 @@ import { FloatingShapes } from "@/components/landing/FloatingShapes";
 import { FeatureCard } from "@/components/landing/FeatureCard";
 import { MicroConversation } from "@/components/landing/MicroConversation";
 import { WebsitePreview } from "@/components/landing/WebsitePreview";
+import { ContactForm } from "@/components/landing/ContactForm";
 import { translations, Lang } from "@/lib/i18n";
 
 export default function Landing() {
