@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 
 // Schema for Step 1
 const step1Schema = z.object({
@@ -33,6 +33,40 @@ const step2Schema = z.object({
 
 type Step1Data = z.infer<typeof step1Schema>;
 type Step2Data = z.infer<typeof step2Schema>;
+
+// Loading Animation Component
+function OrbitingSquares() {
+  return (
+    <div className="flex items-center justify-center h-full w-full py-2">
+      <div className="relative flex items-center justify-center w-12 h-12">
+        {/* Central Square */}
+        <motion.div 
+          className="absolute w-4 h-4 bg-black"
+          initial={{ scale: 0.8 }}
+          animate={{ scale: [0.8, 1.2, 0.8] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        />
+        
+        {/* Orbiting Squares */}
+        {[0, 90, 180, 270].map((deg, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1.5 h-1.5 bg-black"
+            style={{ rotate: deg }}
+            animate={{ rotate: deg + 360 }}
+            transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+          >
+            <motion.div 
+              className="w-full h-full bg-black"
+              style={{ x: 20 }} // Distance from center
+            />
+          </motion.div>
+        ))}
+      </div>
+      <span className="ml-4 font-bold text-[14px] uppercase tracking-widest">Generating...</span>
+    </div>
+  );
+}
 
 export function WebsitePreview() {
   const { toast } = useToast();
@@ -120,7 +154,11 @@ export function WebsitePreview() {
   if (previewUrl) {
     return (
       <div className="w-full max-w-xl mx-auto flex flex-col items-center justify-center p-8 border-2 border-black bg-white gap-6">
-        <div className="text-[48px]">✅</div>
+        {/* Custom Black Square with White Checkmark */}
+        <div className="h-16 w-16 bg-black flex items-center justify-center">
+          <Check className="h-8 w-8 text-white stroke-[4]" />
+        </div>
+        
         <div className="text-[24px] font-bold text-black uppercase tracking-tight">
           Your Preview is Ready!
         </div>
@@ -252,6 +290,7 @@ export function WebsitePreview() {
                     <SelectItem value="beauty">Beauty & Wellness</SelectItem>
                     <SelectItem value="services">Professional Services</SelectItem>
                     <SelectItem value="realestate">Real Estate</SelectItem>
+                    <SelectItem value="education">Education</SelectItem>
                     <SelectItem value="technology">Technology</SelectItem>
                     <SelectItem value="other">Other</SelectItem>
                   </SelectContent>
@@ -290,14 +329,7 @@ export function WebsitePreview() {
               className="h-16 w-full rounded-none bg-black text-[18px] font-black uppercase tracking-widest text-white hover:bg-black/90 transition-all"
             >
               {isLoading ? (
-                <div className="flex items-center gap-2">
-                  <span>Generating...</span>
-                  <span className="flex gap-1 ml-2">
-                    <span className="h-1.5 w-1.5 bg-white rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                    <span className="h-1.5 w-1.5 bg-white rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                    <span className="h-1.5 w-1.5 bg-white rounded-full animate-bounce"></span>
-                  </span>
-                </div>
+                <OrbitingSquares />
               ) : (
                 "See My Demo →"
               )}
