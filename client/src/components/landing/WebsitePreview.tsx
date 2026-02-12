@@ -16,9 +16,14 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { ArrowRight } from "lucide-react";
 
-const formSchema = z.object({
-  businessName: z.string().min(1, "Business Name is required"),
+// Schema for Step 1
+const step1Schema = z.object({
   url: z.string().url("Please enter a valid URL (e.g., https://example.com)"),
+});
+
+// Schema for Step 2
+const step2Schema = z.object({
+  businessName: z.string().min(1, "Business Name is required"),
   email: z.string().email("Valid email is required"),
   phone: z.string().optional(),
   industry: z.string().optional(),
@@ -26,18 +31,27 @@ const formSchema = z.object({
   notes: z.string().optional(),
 });
 
-type FormData = z.infer<typeof formSchema>;
+type Step1Data = z.infer<typeof step1Schema>;
+type Step2Data = z.infer<typeof step2Schema>;
 
 export function WebsitePreview() {
   const { toast } = useToast();
+  const [step, setStep] = useState<1 | 2>(1);
+  const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+  // Form 1: URL Only
+  const form1 = useForm<Step1Data>({
+    resolver: zodResolver(step1Schema),
+    defaultValues: { url: "" },
+  });
+
+  // Form 2: Detailed Lead Info
+  const form2 = useForm<Step2Data>({
+    resolver: zodResolver(step2Schema),
     defaultValues: {
       businessName: "",
-      url: "",
       email: "",
       phone: "",
       industry: "",
@@ -46,20 +60,38 @@ export function WebsitePreview() {
     },
   });
 
-  const onSubmit = async (data: FormData) => {
+  const onStep1Submit = (data: Step1Data) => {
+    setUrl(data.url);
+    
+    // Auto-fill business name from URL
+    try {
+      const hostname = new URL(data.url).hostname;
+      const domain = hostname.replace('www.', '').split('.')[0];
+      const suggestedName = domain.charAt(0).toUpperCase() + domain.slice(1);
+      form2.setValue("businessName", suggestedName);
+    } catch (e) {
+      // Ignore URL parsing errors
+    }
+    
+    setStep(2);
+  };
+
+  const onStep2Submit = async (data: Step2Data) => {
     setIsLoading(true);
     
-    // Simulate processing for 2 seconds to show the animation
+    // Simulate processing
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     try {
+      const payload = { ...data, url };
+      
       const response = await fetch('/api/demo-preview/create', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
           'X-Demo-API-Key': 'ilnaj-demo-2024-secure'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(payload)
       });
       
       const result = await response.json();
@@ -70,9 +102,6 @@ export function WebsitePreview() {
           description: "Your custom preview is ready.",
         });
         setPreviewUrl(result.previewUrl);
-        
-        // Log lead capture (optional, as backend likely handles it)
-        console.log('Lead captured:', { email: data.email, businessName: data.businessName, brandName: result.brandName });
       } else {
         throw new Error(result.error || 'Failed to create preview');
       }
@@ -111,7 +140,9 @@ export function WebsitePreview() {
           variant="ghost"
           onClick={() => {
             setPreviewUrl(null);
-            form.reset();
+            setStep(1);
+            form1.reset();
+            form2.reset();
           }}
           className="text-[11px] font-bold uppercase tracking-widest text-black/40 hover:text-black mt-2"
         >
@@ -125,155 +156,155 @@ export function WebsitePreview() {
     <div className="w-full max-w-2xl mx-auto">
       <div className="mb-8 text-center">
         <h2 className="text-[28px] font-black uppercase tracking-tighter mb-2">See AI on Your Website</h2>
-        <p className="text-[16px] text-black/60 font-medium">Enter your details and we'll create a personalized AI assistant preview for your business.</p>
+        <p className="text-[16px] text-black/60 font-medium">
+          {step === 1 ? "Enter your website URL to get started." : "Almost there! Tell us about your business."}
+        </p>
       </div>
 
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 border-2 border-black p-8 bg-white">
-        {/* Required Fields */}
-        <div className="space-y-2">
-          <label htmlFor="businessName" className="block text-[14px] font-bold uppercase tracking-wide">
-            Business Name *
-          </label>
-          <Input
-            {...form.register("businessName")}
-            id="businessName"
-            placeholder="e.g., Manuel's Bakery"
-            className="h-12 border-2 border-black rounded-none px-4 text-[16px] focus-visible:ring-0"
-            disabled={isLoading}
-          />
-          {form.formState.errors.businessName && (
-            <p className="text-red-500 text-xs font-bold uppercase">{form.formState.errors.businessName.message}</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <label htmlFor="url" className="block text-[14px] font-bold uppercase tracking-wide">
-            Website URL *
-          </label>
-          <Input
-            {...form.register("url")}
-            id="url"
-            placeholder="https://yourwebsite.com"
-            className="h-12 border-2 border-black rounded-none px-4 text-[16px] focus-visible:ring-0"
-            disabled={isLoading}
-          />
-          {form.formState.errors.url && (
-            <p className="text-red-500 text-xs font-bold uppercase">{form.formState.errors.url.message}</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <label htmlFor="email" className="block text-[14px] font-bold uppercase tracking-wide">
-            Email Address *
-          </label>
-          <Input
-            {...form.register("email")}
-            id="email"
-            type="email"
-            placeholder="you@company.com"
-            className="h-12 border-2 border-black rounded-none px-4 text-[16px] focus-visible:ring-0"
-            disabled={isLoading}
-          />
-          <p className="text-[12px] text-black/40 font-medium">We'll send you the preview link and follow up.</p>
-          {form.formState.errors.email && (
-            <p className="text-red-500 text-xs font-bold uppercase">{form.formState.errors.email.message}</p>
-          )}
-        </div>
-
-        {/* Optional Fields - 2 Column Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <label htmlFor="phone" className="block text-[14px] font-bold uppercase tracking-wide">
-              Phone Number
-            </label>
-            <Input
-              {...form.register("phone")}
-              id="phone"
-              type="tel"
-              placeholder="+1 234 567 890"
-              className="h-12 border-2 border-black rounded-none px-4 text-[16px] focus-visible:ring-0"
-              disabled={isLoading}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label htmlFor="industry" className="block text-[14px] font-bold uppercase tracking-wide">
-              Industry
-            </label>
-            <Select onValueChange={(val) => form.setValue("industry", val)} disabled={isLoading}>
-              <SelectTrigger className="h-12 border-2 border-black rounded-none px-4 text-[16px] focus:ring-0">
-                <SelectValue placeholder="Select industry..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="retail">Retail / E-commerce</SelectItem>
-                <SelectItem value="food">Food & Beverage</SelectItem>
-                <SelectItem value="healthcare">Healthcare / Medical</SelectItem>
-                <SelectItem value="beauty">Beauty & Wellness</SelectItem>
-                <SelectItem value="services">Professional Services</SelectItem>
-                <SelectItem value="realestate">Real Estate</SelectItem>
-                <SelectItem value="education">Education</SelectItem>
-                <SelectItem value="technology">Technology</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <label htmlFor="companySize" className="block text-[14px] font-bold uppercase tracking-wide">
-            Company Size
-          </label>
-          <Select onValueChange={(val) => form.setValue("companySize", val)} disabled={isLoading}>
-            <SelectTrigger className="h-12 border-2 border-black rounded-none px-4 text-[16px] focus:ring-0">
-              <SelectValue placeholder="Select size..." />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="1-10">1-10 employees</SelectItem>
-              <SelectItem value="11-50">11-50 employees</SelectItem>
-              <SelectItem value="51-200">51-200 employees</SelectItem>
-              <SelectItem value="201+">201+ employees</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-2">
-          <label htmlFor="notes" className="block text-[14px] font-bold uppercase tracking-wide">
-            Additional Notes
-          </label>
-          <Textarea
-            {...form.register("notes")}
-            id="notes"
-            placeholder="Tell us about your specific needs or questions..."
-            className="min-h-[100px] border-2 border-black rounded-none p-4 text-[16px] resize-y focus-visible:ring-0"
-            disabled={isLoading}
-          />
-        </div>
-
-        <Button
-          type="submit"
-          disabled={isLoading}
-          className="h-16 w-full rounded-none bg-black text-[18px] font-black uppercase tracking-widest text-white hover:bg-black/90 transition-all"
-        >
-          {isLoading ? (
-            <div className="flex items-center gap-2">
-              <span>Creating your AI preview</span>
-              <span className="flex gap-1 ml-2">
-                <span className="h-1.5 w-1.5 bg-white rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                <span className="h-1.5 w-1.5 bg-white rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                <span className="h-1.5 w-1.5 bg-white rounded-full animate-bounce"></span>
-              </span>
+      <div className="border-2 border-black p-8 bg-white transition-all">
+        {step === 1 ? (
+          <form onSubmit={form1.handleSubmit(onStep1Submit)} className="space-y-4">
+            <div className="space-y-2">
+              <Input
+                {...form1.register("url")}
+                placeholder="Enter your website URL (e.g., https://nike.com)"
+                className="h-14 border-2 border-black rounded-none px-4 text-[16px] focus-visible:ring-0"
+              />
+              {form1.formState.errors.url && (
+                <p className="text-red-500 text-xs font-bold uppercase">{form1.formState.errors.url.message}</p>
+              )}
             </div>
-          ) : (
-            "Generate My Preview"
-          )}
-        </Button>
-      </form>
-      
-      {isLoading && (
-        <p className="text-center mt-4 text-[14px] text-black/60 font-medium animate-pulse">
-          This takes about 10 seconds...
-        </p>
-      )}
+            
+            <Button
+              type="submit"
+              className="h-14 w-full rounded-none bg-black text-[16px] font-black uppercase tracking-widest text-white hover:bg-black/90 transition-all"
+            >
+              Try It Free <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+            
+            <p className="text-center text-[12px] text-black/40 font-bold uppercase tracking-widest mt-4">
+              No credit card required • Instant Preview
+            </p>
+          </form>
+        ) : (
+          <form onSubmit={form2.handleSubmit(onStep2Submit)} className="space-y-6">
+            {/* Step 2 Form */}
+            <div className="bg-gray-50 p-3 border border-dashed border-gray-300 flex justify-between items-center mb-6">
+              <span className="text-sm font-medium text-gray-600 truncate max-w-[200px]">{url}</span>
+              <button 
+                type="button" 
+                onClick={() => setStep(1)}
+                className="text-xs font-bold uppercase text-black hover:underline"
+              >
+                Change
+              </button>
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-[14px] font-bold uppercase tracking-wide">Business Name *</label>
+              <Input
+                {...form2.register("businessName")}
+                placeholder="e.g., Manuel's Bakery"
+                className="h-12 border-2 border-black rounded-none px-4 text-[16px] focus-visible:ring-0"
+                disabled={isLoading}
+              />
+              {form2.formState.errors.businessName && (
+                <p className="text-red-500 text-xs font-bold uppercase">{form2.formState.errors.businessName.message}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-[14px] font-bold uppercase tracking-wide">Email Address *</label>
+              <Input
+                {...form2.register("email")}
+                type="email"
+                placeholder="you@company.com"
+                className="h-12 border-2 border-black rounded-none px-4 text-[16px] focus-visible:ring-0"
+                disabled={isLoading}
+              />
+              {form2.formState.errors.email && (
+                <p className="text-red-500 text-xs font-bold uppercase">{form2.formState.errors.email.message}</p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="block text-[14px] font-bold uppercase tracking-wide">Phone Number</label>
+                <Input
+                  {...form2.register("phone")}
+                  type="tel"
+                  placeholder="+1 234 567 890"
+                  className="h-12 border-2 border-black rounded-none px-4 text-[16px] focus-visible:ring-0"
+                  disabled={isLoading}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-[14px] font-bold uppercase tracking-wide">Industry</label>
+                <Select onValueChange={(val) => form2.setValue("industry", val)} disabled={isLoading}>
+                  <SelectTrigger className="h-12 border-2 border-black rounded-none px-4 text-[16px] focus:ring-0">
+                    <SelectValue placeholder="Select..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="retail">Retail / E-commerce</SelectItem>
+                    <SelectItem value="food">Food & Beverage</SelectItem>
+                    <SelectItem value="healthcare">Healthcare / Medical</SelectItem>
+                    <SelectItem value="beauty">Beauty & Wellness</SelectItem>
+                    <SelectItem value="services">Professional Services</SelectItem>
+                    <SelectItem value="realestate">Real Estate</SelectItem>
+                    <SelectItem value="technology">Technology</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-[14px] font-bold uppercase tracking-wide">Company Size</label>
+              <Select onValueChange={(val) => form2.setValue("companySize", val)} disabled={isLoading}>
+                <SelectTrigger className="h-12 border-2 border-black rounded-none px-4 text-[16px] focus:ring-0">
+                  <SelectValue placeholder="Select size..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1-10">1-10 employees</SelectItem>
+                  <SelectItem value="11-50">11-50 employees</SelectItem>
+                  <SelectItem value="51-200">51-200 employees</SelectItem>
+                  <SelectItem value="201+">201+ employees</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-[14px] font-bold uppercase tracking-wide">Additional Notes</label>
+              <Textarea
+                {...form2.register("notes")}
+                placeholder="Any specific needs?"
+                className="min-h-[80px] border-2 border-black rounded-none p-4 text-[16px] resize-y focus-visible:ring-0"
+                disabled={isLoading}
+              />
+            </div>
+
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="h-16 w-full rounded-none bg-black text-[18px] font-black uppercase tracking-widest text-white hover:bg-black/90 transition-all"
+            >
+              {isLoading ? (
+                <div className="flex items-center gap-2">
+                  <span>Generating...</span>
+                  <span className="flex gap-1 ml-2">
+                    <span className="h-1.5 w-1.5 bg-white rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                    <span className="h-1.5 w-1.5 bg-white rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                    <span className="h-1.5 w-1.5 bg-white rounded-full animate-bounce"></span>
+                  </span>
+                </div>
+              ) : (
+                "See My Demo →"
+              )}
+            </Button>
+          </form>
+        )}
+      </div>
     </div>
   );
 }
