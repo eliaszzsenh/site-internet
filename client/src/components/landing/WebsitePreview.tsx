@@ -34,35 +34,51 @@ const step2Schema = z.object({
 type Step1Data = z.infer<typeof step1Schema>;
 type Step2Data = z.infer<typeof step2Schema>;
 
-// Loading Animation Component
+// Loading Animation Component - Standalone "Quadratic" Motion
 function OrbitingSquares() {
-  return (
-    <div className="flex items-center justify-center h-full w-full py-2">
-      <div className="relative flex items-center justify-center w-12 h-12">
-        {/* Core - Static White Square */}
-        <div className="absolute w-3 h-3 bg-white" />
-        
-        {/* Inner Orbit - Clockwise */}
-        <motion.div 
-          className="absolute w-full h-full flex items-center justify-center"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-        >
-          <div className="absolute w-1.5 h-1.5 bg-white" style={{ top: 0 }} />
-          <div className="absolute w-1.5 h-1.5 bg-white" style={{ bottom: 0 }} />
-        </motion.div>
+  const duration = 2;
+  const ease = "easeInOut";
 
-        {/* Outer Orbit - Counter-Clockwise */}
-        <motion.div 
-          className="absolute w-[160%] h-[160%] flex items-center justify-center"
-          animate={{ rotate: -360 }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
-        >
-          <div className="absolute w-1.5 h-1.5 bg-white" style={{ left: 0 }} />
-          <div className="absolute w-1.5 h-1.5 bg-white" style={{ right: 0 }} />
-        </motion.div>
+  return (
+    <div className="flex flex-col items-center justify-center w-full h-[300px] border-2 border-black bg-white">
+      <div className="relative w-16 h-16">
+        {/* Central Static Square */}
+        <div className="absolute top-1/2 left-1/2 w-6 h-6 bg-black -translate-x-1/2 -translate-y-1/2" />
+        
+        {/* Orbiting Square 1 - Clockwise along perimeter */}
+        <motion.div
+          className="absolute w-3 h-3 bg-black"
+          animate={{
+            top: [0, 0, "100%", "100%", 0],
+            left: [0, "100%", "100%", 0, 0],
+          }}
+          transition={{
+            duration: duration,
+            ease: ease,
+            repeat: Infinity,
+            times: [0, 0.25, 0.5, 0.75, 1]
+          }}
+        />
+
+        {/* Orbiting Square 2 - Counter-Clockwise (starts opposite) */}
+        <motion.div
+          className="absolute w-3 h-3 bg-black"
+          initial={{ top: "100%", left: "100%" }}
+          animate={{
+            top: ["100%", "100%", 0, 0, "100%"],
+            left: ["100%", 0, 0, "100%", "100%"],
+          }}
+          transition={{
+            duration: duration,
+            ease: ease,
+            repeat: Infinity,
+            times: [0, 0.25, 0.5, 0.75, 1]
+          }}
+        />
       </div>
-      <span className="ml-8 font-bold text-[14px] uppercase tracking-widest text-white">Generating...</span>
+      <span className="mt-8 font-black text-[16px] uppercase tracking-[0.2em] text-black animate-pulse">
+        Analyzing Website...
+      </span>
     </div>
   );
 }
@@ -95,8 +111,6 @@ export function WebsitePreview() {
 
   const onStep1Submit = (data: Step1Data) => {
     setUrl(data.url);
-    
-    // Auto-fill business name from URL
     try {
       const hostname = new URL(data.url).hostname;
       const domain = hostname.replace('www.', '').split('.')[0];
@@ -105,19 +119,15 @@ export function WebsitePreview() {
     } catch (e) {
       // Ignore URL parsing errors
     }
-    
     setStep(2);
   };
 
   const onStep2Submit = async (data: Step2Data) => {
     setIsLoading(true);
-    
-    // Simulate processing
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     try {
       const payload = { ...data, url };
-      
       const response = await fetch('/api/demo-preview/create', {
         method: 'POST',
         headers: { 
@@ -126,46 +136,38 @@ export function WebsitePreview() {
         },
         body: JSON.stringify(payload)
       });
-      
       const result = await response.json();
       
       if (result.success) {
-        toast({
-          title: "Analysis complete",
-          description: "Your custom preview is ready.",
-        });
+        toast({ title: "Analysis complete", description: "Your custom preview is ready." });
         setPreviewUrl(result.previewUrl);
       } else {
         throw new Error(result.error || 'Failed to create preview');
       }
-      
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Could not generate preview. Please try again.",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: error.message || "Failed to create preview.", variant: "destructive" });
     } finally {
       setIsLoading(false);
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="w-full max-w-2xl mx-auto">
+        <div className="mb-8 text-center">
+          <h2 className="text-[28px] font-black uppercase tracking-tighter mb-2">Processing</h2>
+          <p className="text-[16px] text-black/60 font-medium">Please wait while we generate your preview.</p>
+        </div>
+        <OrbitingSquares />
+      </div>
+    );
+  }
+
   if (previewUrl) {
     return (
       <div className="w-full max-w-xl mx-auto flex flex-col items-center justify-center p-8 border-2 border-black bg-white gap-6">
-        {/* Custom Black Square with Sharp 90-Degree White Checkmark */}
-        <div className="h-16 w-16 bg-black flex items-center justify-center relative">
-          {/* Using rects for guaranteed sharp corners */}
-          <div className="relative w-8 h-8">
-            {/* Short leg */}
-            <div className="absolute bottom-2 left-1 w-2.5 h-1 bg-white origin-bottom-left rotate-45"></div>
-            {/* Long leg */}
-            <div className="absolute bottom-2 left-2.5 w-6 h-1 bg-white origin-bottom-left -rotate-45" style={{ transform: 'rotate(-55deg) translateY(2px)' }}></div>
-            {/* Correction overlay to square off the joint */}
-            <svg width="32" height="32" viewBox="0 0 32 32" className="absolute inset-0">
-               <polygon points="5,18 12,25 27,8 24,5 12,19 8,15" fill="white" stroke="none" />
-            </svg>
-          </div>
+        <div className="h-16 w-16 bg-black flex items-center justify-center">
+          <Check className="h-8 w-8 text-white" strokeWidth={4} />
         </div>
         
         <div className="text-[24px] font-bold text-black uppercase tracking-tight">
@@ -235,7 +237,6 @@ export function WebsitePreview() {
           </form>
         ) : (
           <form onSubmit={form2.handleSubmit(onStep2Submit)} className="space-y-6">
-            {/* Step 2 Form */}
             <div className="bg-gray-50 p-3 border border-dashed border-gray-300 flex justify-between items-center mb-6">
               <span className="text-sm font-medium text-gray-600 truncate max-w-[200px]">{url}</span>
               <button 
@@ -337,11 +338,7 @@ export function WebsitePreview() {
               disabled={isLoading}
               className="h-16 w-full rounded-none bg-black text-[18px] font-black uppercase tracking-widest text-white hover:bg-black/90 transition-all"
             >
-              {isLoading ? (
-                <OrbitingSquares />
-              ) : (
-                "See My Demo →"
-              )}
+              "See My Demo →"
             </Button>
           </form>
         )}
