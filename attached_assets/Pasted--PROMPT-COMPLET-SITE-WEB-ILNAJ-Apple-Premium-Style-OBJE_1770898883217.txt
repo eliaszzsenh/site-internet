@@ -1,0 +1,635 @@
+🍎 PROMPT COMPLET - SITE WEB ILNAJ (Apple Premium Style)
+🎯 OBJECTIF PRINCIPAL
+Créer un site web one-page ultra-premium pour ILNAJ, plateforme SaaS d'automatisation conversationnelle. Style Apple.com et Stripe.com : minimalisme radical, typographie impeccable, whitespace abondant, animations subtiles.
+
+🧠 POSITIONNEMENT PRODUIT
+Ce qu'est ILNAJ
+ILNAJ n'est PAS un simple chatbot.
+C'est une infrastructure IA invisible qui s'intègre dans n'importe quel site web pour automatiser trois processus métier critiques :
+
+💳 Commerce : Présentation catalogue, vérification stock temps réel, génération liens de paiement Stripe
+📅 Réservations : Prise de rendez-vous automatique, synchronisation agenda, confirmations instantanées
+💬 Support : Réponses FAQ intelligentes, assistance produit, escalade vers humain si besoin
+
+Proposition de valeur
+
+Installation en une ligne de code
+Fonctionne 24/7 sans intervention humaine
+S'adapte automatiquement au secteur d'activité du client
+Multilingue natif (détection et réponse automatique)
+White-label complet (branding, couleurs, ton)
+
+Public cible
+PME et commerces locaux : e-commerce, cliniques médicales, salons de beauté, restaurants, cabinets de conseil, artisans.
+
+🎨 DIRECTION CRÉATIVE (CRITIQUE)
+Tone of Voice
+
+Sophistiqué : Comme Apple, pas comme une startup qui crie pour attendre
+Confiant : Pas besoin de survendre, le produit parle de lui-même
+Minimal : Chaque mot compte, zéro superflu
+Factuel : Preuves concrètes > promesses vagues
+
+❌ INTERDICTIONS ABSOLUES
+Ne JAMAIS utiliser ces expressions :
+
+"Vende mientras duermes" / "Sell while you sleep"
+"Tu agenda se llena sola" / "Your calendar fills itself"
+"Precisión quirúrgica" / "Surgical precision" (sauf si utilisé 1 fois max)
+"Invisible por diseño" → Remplacer par "Invisible by design" (OK 1 fois)
+"Sin dolores de cabeza" / "Without headaches"
+"Revolucionario" / "Game-changer" / "Disruptif"
+
+✅ Langage à privilégier
+
+"Assistant conversationnel intelligent"
+"Automatisation des processus métier"
+"Intégration transparente"
+"Infrastructure modulaire"
+"Disponible en continu"
+
+
+🏛️ IDENTITÉ VISUELLE SIGNATURE (Rendre ILNAJ mémorable)
+1️⃣ Le système "Shadow Gradient"
+Concept : Chaque section utilise un gradient vertical SUBTIL qui évolue au scroll.
+Couleurs de fond par section :
+cssHero section        → background: linear-gradient(180deg, #FFFFFF 0%, #FEFAFF 100%)
+Features section    → background: linear-gradient(180deg, #FEFAFF 0%, #F8FAFF 100%)
+Integration section → background: linear-gradient(180deg, #F8FAFF 0%, #FFFFFF 100%)
+CTA section         → background: linear-gradient(180deg, #FFFFFF 0%, #F5F3FF 100%)
+Footer              → background: #F5F3FF (solid lavender)
+```
+
+**Pourquoi** : Crée une sensation de "page vivante", pas statique. Rappelle l'infrastructure invisible.
+
+---
+
+### 2️⃣ Les "Floating Elements" (Formes géométriques flottantes)
+**Concept** : Petites formes abstraites en arrière-plan avec animation lente.
+
+**Règles** :
+- **Formes** : Cercles, carrés arrondis, triangles doux
+- **Tailles** : 40px à 200px
+- **Opacité** : 0.03 à 0.08 (TRÈS subtil, presque invisible)
+- **Couleurs** : Violet (#8B5CF6), Bleu (#3B82F6), Cyan (#06B6D4)
+- **Position** : Absolute, dispersées aléatoirement mais équilibrées
+- **Animation** : Mouvement vertical lent (translate Y -20px à +20px, durée 30s, infinite)
+
+**Exemples de placement** :
+```
+Hero section:
+- Grand cercle violet (180px) en haut à droite, opacity 0.05
+- Petit carré bleu (60px) en bas à gauche, opacity 0.08
+
+Feature cards:
+- Triangle cyan derrière la carte 2, opacity 0.04
+Code CSS exemple :
+css.floating-shape {
+  position: absolute;
+  border-radius: 50%; /* pour cercles */
+  animation: float 30s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+Pourquoi : Donne de la profondeur, rend la page mémorable ("ah oui, celle avec les formes qui bougent").
+
+3️⃣ L'"Active Border Effect" (Bordure animée au hover)
+Concept : Les éléments interactifs ne se contentent pas de se soulever, ils gagnent une bordure colorée qui pulse.
+Appliquer à :
+
+Feature cards
+Boutons CTA
+Tout élément cliquable
+
+Séquence d'animation :
+
+Hover → Carte se soulève (translateY(-4px))
+Bordure apparaît : 1px solid avec gradient violet → bleu
+Bordure pulse une fois (scale 1.02 puis retour en 0.4s)
+Bordure reste visible pendant le hover
+Disparaît au mouse leave
+
+Code CSS :
+css.card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-image: linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%) 1;
+  animation: pulse-border 0.4s ease-out;
+}
+
+@keyframes pulse-border {
+  0%, 100% { transform: translateY(-4px) scale(1); }
+  50% { transform: translateY(-4px) scale(1.02); }
+}
+```
+
+**Pourquoi** : Interactions magiques, pas génériques.
+
+---
+
+### 4️⃣ Le "Typing Cursor" (Curseur clignotant violet)
+**Concept** : Dans le titre Hero, ajouter un curseur clignotant VIOLET après le dernier mot.
+
+**Exemple** :
+```
+"Your customers book, buy, and get help.
+While you sleep.|"  ← Curseur violet (#8B5CF6)
+Code CSS :
+css.typing-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 1.2em;
+  background: #8B5CF6;
+  margin-left: 4px;
+  animation: blink 0.8s infinite;
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+Pourquoi : Clin d'œil subtil à l'IA sans être trop évident. Les gens s'en souviennent.
+
+5️⃣ Le "Glow on Scroll" (Lueur à l'entrée viewport)
+Concept : Quand une feature card entre dans le viewport, elle ne fait pas que fade-in, elle brille brièvement.
+Séquence d'animation :
+
+Carte slide up + fade in (normal)
+À 50% visible : box-shadow: 0 0 40px rgba(139, 92, 246, 0.15)
+Lueur pulse une fois (opacity 0 → 0.15 → 0 sur 1.2s)
+Se stabilise avec shadow normale
+
+Code JS (Intersection Observer) :
+javascriptconst cards = document.querySelectorAll('.feature-card');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('glow-pulse');
+    }
+  });
+}, { threshold: 0.5 });
+
+cards.forEach(card => observer.observe(card));
+```
+
+**Pourquoi** : Les cartes semblent "s'activer" quand on les découvre.
+
+---
+
+### 6️⃣ La "Micro-Conversation" (Widget preview animé)
+**Concept** : Au lieu d'un mockup statique, montrer une conversation LIVE en boucle.
+
+**Script de conversation (8 secondes, auto-loop)** :
+```
+[Widget button pulse]
+→ Bulle proactive : "Need help booking an appointment?"
+→ User (simulé) : "Yes, Tuesday at 3pm"
+→ Typing indicator (3 dots bounce, 0.8s)
+→ AI : "Perfect! Booked for Feb 18 at 3:00 PM. Confirmation sent ✓"
+→ Widget se minimise avec checkmark icon
+→ [Pause 3 sec]
+→ Redémarre
+Styling :
+
+Widget en bas à droite d'un iPhone mockup
+Bulles AI : fond violet (#8B5CF6), texte blanc
+Bulles user : fond gris clair (#F3F4F6), texte noir
+Animations : translateY smooth, pas de pops instantanés
+Typing indicator : 3 points qui rebondissent (CSS keyframes)
+
+Pourquoi : Les visiteurs comprennent le produit en 8 secondes sans cliquer.
+
+7️⃣ L'"Invisible Grid" (Asymétrie calculée)
+Concept : Tout s'aligne sur une grille 12 colonnes, MAIS certains éléments cassent intentionnellement la grille.
+Exemples :
+
+Hero headline : Commence à la colonne 2 (pas 1), crée de l'asymétrie
+Feature cards : Carte 1 et 3 sont 8px plus hautes que carte 2
+iPhone mockup : Déborde de 10% sur la droite
+
+Pourquoi : Sent le design sur-mesure, pas le template WordPress.
+
+📐 STRUCTURE DE LA PAGE (One-Page)
+🟣 SECTION 1 : HERO
+Layout : Centré, max-width 1200px
+Contenu texte :
+html<h1>
+  Your customers book, buy, and get help.<br>
+  While you sleep.<span class="typing-cursor"></span>
+</h1>
+
+<p class="subheadline">
+  ILNAJ deploys invisible AI assistants on your website.
+  Sales, appointments, and support — automated with precision.
+</p>
+
+<div class="cta-buttons">
+  <button class="primary">See it in action</button>
+  <button class="secondary">Talk to us</button>
+</div>
+Spécifications techniques :
+cssHero section {
+  padding: 160px 0 120px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FEFAFF 100%);
+}
+
+h1 {
+  font-size: 72px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #1D1D1F;
+  letter-spacing: -0.02em;
+}
+
+.subheadline {
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #6E6E73;
+  margin-top: 24px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.primary {
+  background: #0071E3;
+  color: white;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.secondary {
+  background: transparent;
+  color: #0071E3;
+  border: 1px solid #0071E3;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: 12px;
+}
+Éléments visuels :
+
+Grand cercle violet flottant (180px) en haut à droite, opacity 0.05
+Petit carré bleu (60px) en bas à gauche, opacity 0.08
+
+
+🟣 SECTION 2 : FEATURES "How ILNAJ Works"
+Layout : 3 cartes égales (desktop), stack vertical (mobile)
+Card Design :
+css.feature-card {
+  background: #FFFFFF;
+  border-radius: 24px;
+  padding: 48px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+  border: 1px solid;
+  border-image: linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%) 1;
+}
+```
+
+**Carte 1 — Commerce automatisé**
+```
+Icon: 💳 (ou SVG minimaliste panier)
+Titre: "Automated commerce"
+Texte: "The AI assistant presents your catalog, checks real-time 
+inventory, and generates Stripe payment links. Customers complete 
+purchases without manual intervention."
+```
+
+**Carte 2 — Gestion des rendez-vous**
+```
+Icon: 📅 (ou SVG minimaliste calendrier)
+Titre: "Appointment management"
+Texte: "Clients choose their time slot, the AI syncs your calendar 
+and sends confirmations. Works 24/7, even on weekends."
+```
+
+**Carte 3 — Support intelligent**
+```
+Icon: 💬 (ou SVG minimaliste cerveau)
+Titre: "Intelligent support"
+Texte: "Automatically answers FAQs based on your product documentation. 
+Escalates to email or phone when human judgment is needed."
+Spacing :
+
+Gap entre cartes : 32px
+Icon size : 48px
+Title : 28px, font-weight 600
+Description : 18px, line-height 1.6, color #6E6E73
+
+
+🟣 SECTION 3 : TECHNICAL "Invisible by Design"
+Layout : Texte centré, max-width 800px
+Contenu :
+html<h2>Invisible by design</h2>
+<p>
+  ILNAJ integrates into your website without touching a single line 
+  of your code. No conflicts, no bugs, no complexity.<br>
+  Just a widget that works — everywhere, every time.
+</p>
+
+<div class="feature-badges">
+  <span>🌍 Native multi-language</span>
+  <span>🎨 Adapts to your brand</span>
+  <span>⚡ Realistic typing effect</span>
+</div>
+
+<div class="code-mockup">
+  <pre>
+&lt;script src="https://ilnaj.ai/widget.js"&gt;&lt;/script&gt;
+&lt;!-- Installation complete --&gt;
+  </pre>
+</div>
+Spécifications :
+csssection {
+  padding: 120px 0;
+  background: linear-gradient(180deg, #F8FAFF 0%, #FFFFFF 100%);
+}
+
+h2 {
+  font-size: 48px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+p {
+  font-size: 20px;
+  line-height: 1.7;
+  color: #6E6E73;
+}
+
+.code-mockup {
+  background: #1D1D1F;
+  color: #00FF00;
+  padding: 24px;
+  border-radius: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-top: 48px;
+}
+
+🟣 SECTION 4 : DEVICE MOCKUP (Live Conversation)
+Layout : Centré, iPhone 15 Pro frame
+Contenu :
+
+iPhone mockup avec widget ILNAJ visible
+Conversation animée en loop (voir section "Micro-Conversation")
+Animation d'entrée : slide from bottom + 15° tilt
+
+Spécifications :
+css.device-mockup {
+  max-width: 400px;
+  margin: 100px auto;
+  animation: slideInPhone 1s ease-out;
+}
+
+@keyframes slideInPhone {
+  from {
+    opacity: 0;
+    transform: translateY(50px) rotateX(15deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotateX(0);
+  }
+}
+```
+
+---
+
+### 🟣 SECTION 5 : INSTALLATION STEPS
+**Layout** : 4 étapes en timeline horizontale
+
+**Étapes** :
+```
+1. Installation (2 min)
+   Copy one line of code. Compatible with all web environments.
+
+2. Business configuration (5 min)
+   Enter your services, pricing, and availability. 
+   The assistant memorizes your catalog instantly.
+
+3. Customization (3 min)
+   Adjust colors, tone, and language to match your brand identity.
+
+4. Go live (Immediate)
+   The assistant starts processing requests, booking appointments, 
+   or closing sales.
+Design timeline :
+
+Ligne horizontale reliant les numéros
+Cercles numérotés (gradient violet → bleu)
+Texte en dessous de chaque cercle
+
+
+🟣 SECTION 6 : FINAL CTA
+Layout : Full-width, gradient background
+Contenu :
+html<h2>Test ILNAJ on your website</h2>
+<p>Join businesses automating their core processes.</p>
+<button class="cta-large">Book a 15-min demo</button>
+Spécifications :
+csssection {
+  padding: 140px 0;
+  background: linear-gradient(180deg, #FFFFFF 0%, #F5F3FF 100%);
+  text-align: center;
+}
+
+h2 {
+  font-size: 56px;
+  font-weight: 600;
+}
+
+.cta-large {
+  height: 56px;
+  padding: 0 32px;
+  font-size: 18px;
+  background: #0071E3;
+  color: white;
+  border-radius: 12px;
+  margin-top: 32px;
+}
+
+🟣 SECTION 7 : FOOTER
+Layout : Simple, centré, minimal
+Contenu :
+html<div class="footer-links">
+  <a href="#">Customer Console</a>
+  <a href="#">Support</a>
+  <a href="#">Privacy Policy</a>
+</div>
+<p class="copyright">© 2026 ILNAJ. Invisible infrastructure.</p>
+Spécifications :
+cssfooter {
+  background: #F5F3FF;
+  padding: 60px 0;
+  text-align: center;
+}
+
+footer a {
+  font-size: 14px;
+  color: #6E6E73;
+  margin: 0 16px;
+}
+
+🎨 DESIGN SYSTEM COMPLET
+Typographie
+cssfont-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+
+H1 (Hero): 72px, weight 700, line-height 1.1, letter-spacing -0.02em
+H2 (Sections): 48px, weight 600, line-height 1.2
+H3 (Cards): 28px, weight 600, line-height 1.3
+Body: 18px, weight 400, line-height 1.6
+Small: 14px, weight 400
+Palette de couleurs
+css/* Backgrounds */
+--white: #FFFFFF
+--gray-lightest: #FAFAFA
+--gray-light: #F5F5F7
+--purple-tint: #FEFAFF
+--blue-tint: #F8FAFF
+--lavender: #F5F3FF
+
+/* Text */
+--text-primary: #1D1D1F
+--text-secondary: #6E6E73
+
+/* Accents */
+--apple-blue: #0071E3
+--purple: #8B5CF6
+--blue: #3B82F6
+--cyan: #06B6D4
+Spacing
+css--section-padding-desktop: 120px
+--section-padding-mobile: 80px
+--card-gap: 32px
+--max-content-width: 1200px
+--border-radius-card: 24px
+--border-radius-button: 12px
+Shadows
+css--shadow-card: 0 4px 16px rgba(0,0,0,0.04)
+--shadow-card-hover: 0 12px 32px rgba(0,0,0,0.08)
+--shadow-glow: 0 0 40px rgba(139, 92, 246, 0.15)
+Animations
+css--transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1)
+--transition-spring: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)
+
+📱 RESPONSIVE DESIGN
+Breakpoints
+css/* Mobile */
+@media (max-width: 767px) {
+  h1 { font-size: 36px; }
+  .feature-cards { flex-direction: column; }
+  .section-padding { padding: 60px 0; }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+  h1 { font-size: 52px; }
+  .feature-cards { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  /* Styles par défaut */
+}
+
+✅ CHECKLIST TECHNIQUE
+Performance
+
+ Lazy loading images et animations (Intersection Observer)
+ Images en WebP avec fallback PNG
+ Minification CSS/JS en production
+ Score Lighthouse > 90
+
+Accessibilité
+
+ Contraste texte/fond WCAG AA minimum
+ Navigation clavier complète (focus visible)
+ ARIA labels sur tous les boutons
+ Alt text descriptif sur toutes les images
+
+SEO
+
+ Structure H1 → H6 correcte
+ Meta description < 155 caractères
+ Open Graph tags (partage social)
+ Sitemap.xml généré
+
+
+🎁 ASSETS REQUIS
+À fournir
+
+ Logo ILNAJ (SVG vectoriel)
+ iPhone 15 Pro mockup frame (PNG transparent)
+ 3 icônes features (SVG minimaliste 48×48px)
+ Favicon (multiple tailles)
+
+Polices
+
+SF Pro Display (via -apple-system fallback) ou Inter en backup
+
+
+💼 LIVRABLES ATTENDUS
+
+Code source : React component ou HTML/CSS/JS pur
+Responsive : Testé sur iPhone, iPad, Desktop
+Animations : Scroll animations + hover effects fonctionnels
+Documentation : Comments dans le code + README
+Déploiement : Sur Vercel/Netlify ou hébergement fourni
+
+
+🚀 PRIORITÉS DE DÉVELOPPEMENT
+Phase 1 (MVP) :
+
+Structure HTML + CSS de base
+Typographie + couleurs système
+Hero section + Feature cards
+Responsive mobile
+
+Phase 2 (Polish) :
+
+Floating shapes animées
+Glow on scroll effects
+Active border hovers
+Typing cursor
+
+Phase 3 (Advanced) :
+
+Micro-conversation animée (widget preview)
+Parallax background subtil
+Optimisations performance
+Tests accessibilité
+
+
+📝 NOTES FINALES
+Ce qui fait qu'une page "sent Apple"
+
+Whitespace généreux (ne pas avoir peur du vide)
+Typographie massive (H1 doit être impressionnant)
+Animations subtiles (jamais flashy, toujours smooth)
+Détails invisibles (micro-interactions au hover)
+Cohérence absolue (même spacing partout)
+
+Question à se poser avant de valider
+
+"Est-ce que Jony Ive approuverait ce design ?"
+
+Si la réponse est non → simplifier encore.
+
+BUILD THIS WITH LOVE, PRECISION, AND OBSESSIVE ATTENTION TO DETAIL.
+End of Prompt
