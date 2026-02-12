@@ -39,31 +39,30 @@ function OrbitingSquares() {
   return (
     <div className="flex items-center justify-center h-full w-full py-2">
       <div className="relative flex items-center justify-center w-12 h-12">
-        {/* Central Square - White because button is black */}
-        <motion.div 
-          className="absolute w-4 h-4 bg-white"
-          initial={{ scale: 0.8 }}
-          animate={{ scale: [0.8, 1.2, 0.8], rotate: 90 }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        />
+        {/* Core - Static White Square */}
+        <div className="absolute w-3 h-3 bg-white" />
         
-        {/* Orbiting Squares - White because button is black */}
-        {[0, 90, 180, 270].map((deg, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1.5 h-1.5"
-            style={{ rotate: deg }}
-            animate={{ rotate: deg + 360 }}
-            transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-          >
-            <motion.div 
-              className="w-full h-full bg-white"
-              style={{ x: 24 }} // Increased distance from center
-            />
-          </motion.div>
-        ))}
+        {/* Inner Orbit - Clockwise */}
+        <motion.div 
+          className="absolute w-full h-full flex items-center justify-center"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+        >
+          <div className="absolute w-1.5 h-1.5 bg-white" style={{ top: 0 }} />
+          <div className="absolute w-1.5 h-1.5 bg-white" style={{ bottom: 0 }} />
+        </motion.div>
+
+        {/* Outer Orbit - Counter-Clockwise */}
+        <motion.div 
+          className="absolute w-[160%] h-[160%] flex items-center justify-center"
+          animate={{ rotate: -360 }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
+        >
+          <div className="absolute w-1.5 h-1.5 bg-white" style={{ left: 0 }} />
+          <div className="absolute w-1.5 h-1.5 bg-white" style={{ right: 0 }} />
+        </motion.div>
       </div>
-      <span className="ml-6 font-bold text-[14px] uppercase tracking-widest text-white">Generating...</span>
+      <span className="ml-8 font-bold text-[14px] uppercase tracking-widest text-white">Generating...</span>
     </div>
   );
 }
@@ -154,23 +153,19 @@ export function WebsitePreview() {
   if (previewUrl) {
     return (
       <div className="w-full max-w-xl mx-auto flex flex-col items-center justify-center p-8 border-2 border-black bg-white gap-6">
-        {/* Custom Black Square with Sharp White Checkmark */}
-        <div className="h-16 w-16 bg-black flex items-center justify-center">
-          <svg 
-            width="32" 
-            height="32" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path 
-              d="M20 6L9 17L4 12" 
-              stroke="white" 
-              strokeWidth="4" 
-              strokeLinecap="square" 
-              strokeLinejoin="miter"
-            />
-          </svg>
+        {/* Custom Black Square with Sharp 90-Degree White Checkmark */}
+        <div className="h-16 w-16 bg-black flex items-center justify-center relative">
+          {/* Using rects for guaranteed sharp corners */}
+          <div className="relative w-8 h-8">
+            {/* Short leg */}
+            <div className="absolute bottom-2 left-1 w-2.5 h-1 bg-white origin-bottom-left rotate-45"></div>
+            {/* Long leg */}
+            <div className="absolute bottom-2 left-2.5 w-6 h-1 bg-white origin-bottom-left -rotate-45" style={{ transform: 'rotate(-55deg) translateY(2px)' }}></div>
+            {/* Correction overlay to square off the joint */}
+            <svg width="32" height="32" viewBox="0 0 32 32" className="absolute inset-0">
+               <polygon points="5,18 12,25 27,8 24,5 12,19 8,15" fill="white" stroke="none" />
+            </svg>
+          </div>
         </div>
         
         <div className="text-[24px] font-bold text-black uppercase tracking-tight">
