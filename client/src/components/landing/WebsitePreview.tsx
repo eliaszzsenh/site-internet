@@ -32,29 +32,31 @@ export function WebsitePreview() {
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     try {
-      // In a real implementation with backend:
-      // const response = await fetch('/api/demo-preview/create', {
-      //   method: 'POST',
-      //   headers: { 
-      //     'Content-Type': 'application/json',
-      //     'X-Demo-API-Key': 'ilnaj-demo-2024-secure'
-      //   },
-      //   body: JSON.stringify({ url: data.url })
-      // });
-      // const result = await response.json();
-      // if (result.success) window.location.href = result.previewUrl;
-      
-      toast({
-        title: "Analyzing website...",
-        description: "Redirecting to your custom preview.",
+      const response = await fetch('/api/demo-preview/create', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-Demo-API-Key': 'ilnaj-demo-2024-secure'
+        },
+        body: JSON.stringify({ url: data.url })
       });
       
-      console.log("Redirecting to preview for:", data.url);
+      const result = await response.json();
       
-    } catch (error) {
+      if (result.success) {
+        toast({
+          title: "Analyzing website...",
+          description: "Redirecting to your custom preview.",
+        });
+        window.location.href = result.previewUrl;
+      } else {
+        throw new Error(result.error || 'Failed to create preview');
+      }
+      
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: "Could not generate preview. Please try again.",
+        description: error.message || "Could not generate preview. Please try again.",
         variant: "destructive",
       });
     } finally {
