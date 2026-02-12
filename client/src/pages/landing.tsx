@@ -1,7 +1,162 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Calendar, CreditCard, MessageCircle, Sparkles } from "lucide-react";
+import { ArrowRight, Calendar, CreditCard, MessageCircle, Sparkles, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+type Lang = "en" | "es";
+
+const translations = {
+  en: {
+    nav: {
+      features: "How it works",
+      integration: "Integration",
+      steps: "Steps",
+      talk: "Talk to us",
+      action: "See it in action",
+    },
+    hero: {
+      title: "Your customers book, buy, and get help. While you sleep.",
+      subtitle: "ILNAJ deploys intelligent conversational assistants on your website. Sales, appointments, and support - automated with precision.",
+      cta_primary: "See it in action",
+      cta_secondary: "Talk to us",
+      badge1: "Available in continuous operation",
+      badge2: "Native multi-language",
+      badge3: "Full white-label",
+    },
+    features: {
+      kicker: "HOW ILNAJ WORKS",
+      title: "Three business processes. One assistant.",
+      subtitle: "Designed for commerce, bookings, and support - modular, brand-adaptive, and always on.",
+      card1: {
+        title: "Automated commerce",
+        desc: "The assistant presents your catalog, checks real-time inventory, and generates Stripe payment links. Purchases complete without manual intervention.",
+      },
+      card2: {
+        title: "Appointment management",
+        desc: "Clients choose their time slot, the assistant syncs your calendar and sends confirmations. Works 24/7, including weekends.",
+      },
+      card3: {
+        title: "Intelligent support",
+        desc: "Answers FAQs based on your documentation and product details. Escalates to email or phone when human judgment is needed.",
+      },
+    },
+    integration: {
+      kicker: "TECHNICAL",
+      title: "Invisible by design",
+      subtitle: "ILNAJ integrates into your website with a single line of code. No conflicts, no complexity - just a widget that works everywhere.",
+      badge1: "Native multi-language",
+      badge2: "Adapts to your brand",
+      badge3: "Realistic typing effect",
+    },
+    device: {
+      kicker: "PREVIEW",
+      title: "A live micro-conversation on a loop.",
+      subtitle: "Visitors understand the workflow in seconds: proactive help, structured intent, and a clear outcome.",
+      cta: "Talk to us",
+      steps: "See setup steps",
+    },
+    steps: {
+      kicker: "INSTALLATION",
+      title: "From snippet to live assistant.",
+      subtitle: "Four steps, designed to stay out of your way.",
+      s1: { title: "Installation (2 min)", desc: "Copy one line of code. Compatible with all web environments." },
+      s2: { title: "Business configuration (5 min)", desc: "Enter your services, pricing, and availability. The assistant memorizes your catalog instantly." },
+      s3: { title: "Customization (3 min)", desc: "Adjust colors, tone, and language to match your brand identity." },
+      s4: { title: "Go live (Immediate)", desc: "The assistant starts processing requests, booking appointments, or closing sales." },
+    },
+    cta: {
+      kicker: "READY",
+      title: "Put a conversation layer on your site.",
+      subtitle: "One assistant for commerce, bookings, and support. Modular, multilingual, and white-label.",
+      primary: "Talk to us",
+      secondary: "Back to top",
+    },
+    chat: {
+      assistant: "ILNAJ Assistant",
+      online: "Online",
+      proactive: "Need help booking an appointment?",
+      user: "Yes, Tuesday at 3pm",
+      ai_response: "Perfect! Booked for Feb 18 at 3:00 PM. Confirmation sent \u2713",
+      minimized: "Booked \u2713",
+      chat: "Chat",
+    }
+  },
+  es: {
+    nav: {
+      features: "Cómo funciona",
+      integration: "Integración",
+      steps: "Pasos",
+      talk: "Habla con nosotros",
+      action: "Ver en acción",
+    },
+    hero: {
+      title: "Sus clientes reservan, compran y reciben ayuda. Mientras duerme.",
+      subtitle: "ILNAJ despliega asistentes conversacionales inteligentes en su sitio web. Ventas, citas y soporte - automatizados con precisión.",
+      cta_primary: "Ver en acción",
+      cta_secondary: "Habla con nosotros",
+      badge1: "Disponible en funcionamiento continuo",
+      badge2: "Multilingüe nativo",
+      badge3: "Marca blanca completa",
+    },
+    features: {
+      kicker: "CÓMO FUNCIONA ILNAJ",
+      title: "Tres procesos de negocio. Un asistente.",
+      subtitle: "Diseñado para el comercio, las reservas y el soporte - modular, adaptable a la marca y siempre activo.",
+      card1: {
+        title: "Comercio automatizado",
+        desc: "El asistente presenta su catálogo, verifica el inventario en tiempo real y genera enlaces de pago de Stripe. Las compras se completan sin intervención manual.",
+      },
+      card2: {
+        title: "Gestión de citas",
+        desc: "Los clientes eligen su franja horaria, el asistente sincroniza su calendario y envía confirmaciones. Funciona 24/7, incluso fines de semana.",
+      },
+      card3: {
+        title: "Soporte inteligente",
+        desc: "Responde preguntas frecuentes basadas en su documentación y detalles del producto. Escala a correo o teléfono cuando se necesita juicio humano.",
+      },
+    },
+    integration: {
+      kicker: "TÉCNICO",
+      title: "Invisible por diseño",
+      subtitle: "ILNAJ se integra en su sitio web con una sola línea de código. Sin conflictos, sin complejidad - solo un widget que funciona en todas partes.",
+      badge1: "Multilingüe nativo",
+      badge2: "Se adapta a su marca",
+      badge3: "Efecto de escritura realista",
+    },
+    device: {
+      kicker: "VISTA PREVIA",
+      title: "Una micro-conversación en vivo en bucle.",
+      subtitle: "Los visitantes entienden el flujo en segundos: ayuda proactiva, intención estructurada y un resultado claro.",
+      cta: "Habla con nosotros",
+      steps: "Ver pasos de configuración",
+    },
+    steps: {
+      kicker: "INSTALACIÓN",
+      title: "De un fragmento a un asistente en vivo.",
+      subtitle: "Cuatro pasos, diseñados para no estorbar.",
+      s1: { title: "Instalación (2 min)", desc: "Copie una línea de código. Compatible con todos los entornos web." },
+      s2: { title: "Configuración de negocio (5 min)", desc: "Ingrese sus servicios, precios y disponibilidad. El asistente memoriza su catálogo al instante." },
+      s3: { title: "Personalización (3 min)", desc: "Ajuste colores, tono e idioma para que coincidan con su identidad de marca." },
+      s4: { title: "Puesta en marcha (Inmediata)", desc: "El asistente comienza a procesar solicitudes, reservar citas o cerrar ventas." },
+    },
+    cta: {
+      kicker: "LISTO",
+      title: "Ponga una capa de conversación en su sitio.",
+      subtitle: "Un asistente para comercio, reservas y soporte. Modular, multilingüe y marca blanca.",
+      primary: "Habla con nosotros",
+      secondary: "Volver arriba",
+    },
+    chat: {
+      assistant: "Asistente ILNAJ",
+      online: "En línea",
+      proactive: "¿Necesita ayuda para reservar una cita?",
+      user: "Sí, el martes a las 15:00",
+      ai_response: "¡Perfecto! Reservado para el 18 de febrero a las 15:00. Confirmación enviada \u2713",
+      minimized: "Reservado \u2713",
+      chat: "Chat",
+    }
+  }
+};
 
 type Message = {
   id: string;
@@ -44,12 +199,12 @@ function FloatingShapes() {
       {
         key: "hero-circle",
         className: "rounded-full",
-        style: { width: 180, height: 180, top: -40, right: -40, background: "#8B5CF6", opacity: 0.05 },
+        style: { width: 180, height: 180, top: -40, right: -40, background: "#E5E5E5", opacity: 0.5 },
       },
       {
         key: "hero-square",
         className: "rounded-2xl",
-        style: { width: 64, height: 64, bottom: 30, left: -10, background: "#3B82F6", opacity: 0.08 },
+        style: { width: 64, height: 64, bottom: 30, left: -10, background: "#D4D4D4", opacity: 0.5 },
       },
       {
         key: "feat-tri",
@@ -59,16 +214,16 @@ function FloatingShapes() {
           height: 0,
           borderLeft: "80px solid transparent",
           borderRight: "80px solid transparent",
-          borderBottom: "140px solid #06B6D4",
+          borderBottom: "140px solid #F5F5F5",
           top: 140,
           left: "46%",
-          opacity: 0.04,
+          opacity: 0.5,
         } as React.CSSProperties,
       },
       {
         key: "cta-circle",
         className: "rounded-full",
-        style: { width: 120, height: 120, top: 40, left: "8%", background: "#8B5CF6", opacity: 0.04 },
+        style: { width: 120, height: 120, top: 40, left: "8%", background: "#E5E5E5", opacity: 0.5 },
       },
     ],
     [],
@@ -83,7 +238,8 @@ function FloatingShapes() {
   );
 }
 
-function MicroConversation() {
+function MicroConversation({ lang }: { lang: Lang }) {
+  const t = translations[lang].chat;
   const reduceMotion = useReducedMotion();
   const [step, setStep] = useState(0);
 
@@ -99,15 +255,6 @@ function MicroConversation() {
     [],
   );
 
-  const messages: Message[] = useMemo(
-    () => [
-      { id: "m1", role: "ai", text: "Need help booking an appointment?" },
-      { id: "m2", role: "user", text: "Yes, Tuesday at 3pm" },
-      { id: "m3", role: "ai", text: "Perfect! Booked for Feb 18 at 3:00 PM. Confirmation sent \u2713" },
-    ],
-    [],
-  );
-
   useEffect(() => {
     if (reduceMotion) return;
 
@@ -117,22 +264,11 @@ function MicroConversation() {
     const tick = () => {
       if (!alive) return;
       const now = performance.now();
-      const elapsed = now - start;
+      const elapsed = (now - start) % steps[steps.length - 1]!.t;
 
       const nextIndex = steps.findIndex((s, idx) => elapsed < s.t && idx > 0);
       const computed = nextIndex === -1 ? steps.length - 1 : Math.max(0, nextIndex - 1);
       setStep(computed);
-
-      if (elapsed > steps[steps.length - 1]!.t) {
-        // Restart
-        alive = false;
-        setStep(0);
-        window.setTimeout(() => {
-          if (!alive) {
-            // noop
-          }
-        }, 0);
-      }
     };
 
     const raf = () => {
@@ -142,14 +278,8 @@ function MicroConversation() {
 
     requestAnimationFrame(raf);
 
-    const interval = window.setInterval(() => {
-      // hard reset loop
-      setStep(0);
-    }, steps[steps.length - 1]!.t);
-
     return () => {
       alive = false;
-      window.clearInterval(interval);
     };
   }, [reduceMotion, steps]);
 
@@ -161,23 +291,16 @@ function MicroConversation() {
 
   return (
     <div className="relative">
-      <div className="rounded-[44px] border border-black/10 bg-white shadow-[0_30px_90px_-70px_rgba(15,23,42,0.35)]">
-        <div className="relative aspect-[9/19] overflow-hidden rounded-[44px] bg-gradient-to-b from-white to-[#f7f7ff]">
-          <div className="absolute left-1/2 top-4 h-7 w-36 -translate-x-1/2 rounded-full bg-black/90" />
-
-          <div className="absolute inset-x-0 top-20 px-7">
-            <div className="flex items-center justify-between">
-              <div className="h-3 w-24 rounded-full bg-black/10" />
-              <div className="h-3 w-12 rounded-full bg-black/10" />
-            </div>
-          </div>
+      <div className="rounded-[44px] border border-black bg-white shadow-xl">
+        <div className="relative aspect-[9/19] overflow-hidden rounded-[44px] bg-white">
+          <div className="absolute left-1/2 top-4 h-7 w-36 -translate-x-1/2 rounded-full bg-black" />
 
           <div className="absolute inset-x-0 bottom-0 top-28 px-7 pb-7">
-            <div className="relative h-full rounded-3xl bg-white/70 p-4 shadow-sm ring-1 ring-black/5 backdrop-blur">
-              <div className="flex items-center justify-between">
-                <div className="text-[13px] font-medium text-foreground">ILNAJ Assistant</div>
-                <div className="rounded-full bg-violet-50 px-2 py-1 text-[11px] font-medium text-violet-700">
-                  Online
+            <div className="relative h-full rounded-3xl border border-black bg-white p-4 shadow-sm">
+              <div className="flex items-center justify-between border-b border-black pb-2">
+                <div className="text-[13px] font-bold text-black">{t.assistant}</div>
+                <div className="text-[11px] font-bold uppercase tracking-wider text-black">
+                  {t.online}
                 </div>
               </div>
 
@@ -186,11 +309,10 @@ function MicroConversation() {
                   <motion.div
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, ease: [0.2, 0.8, 0.2, 1] }}
-                    className="max-w-[86%] rounded-2xl bg-violet-500 px-3 py-2 text-[13px] leading-relaxed text-white"
-                    data-testid="text-chat-ai-1"
+                    transition={{ duration: 0.5 }}
+                    className="max-w-[86%] rounded-xl border border-black bg-black px-3 py-2 text-[13px] leading-relaxed text-white"
                   >
-                    {messages[0]!.text}
+                    {t.proactive}
                   </motion.div>
                 )}
 
@@ -198,11 +320,10 @@ function MicroConversation() {
                   <motion.div
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.15, ease: [0.2, 0.8, 0.2, 1] }}
-                    className="ml-auto max-w-[86%] rounded-2xl bg-zinc-100 px-3 py-2 text-[13px] leading-relaxed text-zinc-900"
-                    data-testid="text-chat-user-1"
+                    transition={{ duration: 0.5, delay: 0.15 }}
+                    className="ml-auto max-w-[86%] rounded-xl border border-black bg-white px-3 py-2 text-[13px] leading-relaxed text-black"
                   >
-                    {messages[1]!.text}
+                    {t.user}
                   </motion.div>
                 )}
 
@@ -210,10 +331,7 @@ function MicroConversation() {
                   <motion.div
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, ease: [0.2, 0.8, 0.2, 1] }}
-                    className="inline-flex max-w-[70%] items-center gap-1 rounded-2xl bg-violet-500 px-3 py-2"
-                    aria-label="Assistant typing"
-                    data-testid="status-chat-typing"
+                    className="inline-flex max-w-[70%] items-center gap-1 rounded-xl border border-black bg-black px-3 py-2"
                   >
                     <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-white [animation-delay:-0.2s]" />
                     <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-white [animation-delay:-0.1s]" />
@@ -225,46 +343,27 @@ function MicroConversation() {
                   <motion.div
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, ease: [0.2, 0.8, 0.2, 1] }}
-                    className="max-w-[92%] rounded-2xl bg-violet-500 px-3 py-2 text-[13px] leading-relaxed text-white"
-                    data-testid="text-chat-ai-2"
+                    className="max-w-[92%] rounded-xl border border-black bg-black px-3 py-2 text-[13px] leading-relaxed text-white"
                   >
-                    {messages[2]!.text}
+                    {t.ai_response}
                   </motion.div>
                 )}
               </div>
 
               <div className="absolute bottom-4 right-4">
                 <motion.div
-                  animate={minimized ? { scale: 0.95, opacity: 0.9 } : { scale: 1, opacity: 1 }}
-                  transition={{ duration: 0.35 }}
-                  className="flex items-center gap-2 rounded-full bg-black/5 px-3 py-2 text-[12px] font-medium text-foreground ring-1 ring-black/5"
-                  data-testid="status-chat-widget"
+                  className="flex items-center gap-2 rounded-full border border-black bg-white px-3 py-2 text-[12px] font-bold text-black"
                 >
-                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-violet-500 text-white">
-                    <Sparkles className="h-4 w-4" aria-hidden />
+                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-black text-white">
+                    <Sparkles className="h-4 w-4" />
                   </span>
-                  {minimized ? "Booked \u2713" : "Chat"}
+                  {minimized ? t.minimized : t.chat}
                 </motion.div>
               </div>
             </div>
           </div>
-
-          <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent" />
         </div>
       </div>
-
-      <div
-        className="pointer-events-none absolute -bottom-8 left-1/2 h-16 w-[90%] -translate-x-1/2 rounded-[28px] bg-violet-500/10 blur-2xl"
-        aria-hidden
-      />
-
-      {minimized && (
-        <div
-          className="pointer-events-none absolute -right-2 -top-2 h-2.5 w-2.5 rounded-full bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.12)]"
-          aria-hidden
-        />
-      )}
     </div>
   );
 }
@@ -288,21 +387,21 @@ function FeatureCard({
     <div
       ref={ref}
       className={
-        "ilnaj-active-border ilnaj-noise rounded-3xl bg-white p-8 shadow-sm ring-1 ring-black/5 transition-shadow hover:shadow-md"
+        "ilnaj-active-border ilnaj-noise rounded-none bg-white p-8 shadow-sm transition-shadow hover:shadow-md"
       }
       style={{ translate: `0 ${offset}px` }}
       data-testid={testId}
     >
       <div className="flex items-start gap-4">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500/10 to-blue-500/10 ring-1 ring-black/5">
-          <div className="text-violet-600">{icon}</div>
+        <div className="flex h-12 w-12 items-center justify-center rounded-none border border-black bg-white">
+          <div className="text-black">{icon}</div>
         </div>
         <div>
-          <div className="text-[20px] font-semibold tracking-[-0.01em] text-foreground" data-testid={`${testId}-title`}>
+          <div className="text-[20px] font-bold tracking-tight text-black" data-testid={`${testId}-title`}>
             {title}
           </div>
           <p
-            className="mt-2 text-[15px] leading-relaxed text-muted-foreground"
+            className="mt-2 text-[15px] leading-relaxed text-black/70"
             data-testid={`${testId}-description`}
           >
             {description}
@@ -314,6 +413,8 @@ function FeatureCard({
 }
 
 export default function Landing() {
+  const [lang, setLang] = useState<Lang>("en");
+  const t = translations[lang];
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
@@ -326,7 +427,7 @@ export default function Landing() {
 
     els.forEach((el) => el.addEventListener("mouseenter", onEnter));
     return () => els.forEach((el) => el.removeEventListener("mouseenter", onEnter));
-  }, []);
+  }, [lang]);
 
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
@@ -334,177 +435,155 @@ export default function Landing() {
     el.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
   };
 
+  const toggleLang = () => setLang((prev) => (prev === "en" ? "es" : "en"));
+
   return (
-    <main className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-50 border-b border-black/5 bg-white/70 backdrop-blur">
+    <main className="min-h-screen bg-white text-black font-sans">
+      <header className="sticky top-0 z-50 border-b border-black bg-white/95 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-6">
           <div className="flex items-center gap-2" data-testid="text-brand">
-            <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-violet-500 to-blue-500 shadow-sm" aria-hidden />
-            <div className="text-[15px] font-semibold tracking-[-0.02em]">ILNAJ</div>
+            <div className="h-8 w-8 bg-black" aria-hidden />
+            <div className="text-[16px] font-black tracking-tighter uppercase">ILNAJ</div>
           </div>
 
-          <nav className="hidden items-center gap-8 md:flex" aria-label="Primary">
+          <nav className="hidden items-center gap-10 md:flex" aria-label="Primary">
             <button
-              className="text-[13px] font-medium text-foreground/70 transition-colors hover:text-foreground"
+              className="text-[13px] font-bold uppercase tracking-wider transition-colors hover:underline"
               onClick={() => scrollTo("features")}
-              data-testid="button-nav-features"
             >
-              How it works
+              {t.nav.features}
             </button>
             <button
-              className="text-[13px] font-medium text-foreground/70 transition-colors hover:text-foreground"
+              className="text-[13px] font-bold uppercase tracking-wider transition-colors hover:underline"
               onClick={() => scrollTo("integration")}
-              data-testid="button-nav-integration"
             >
-              Integration
+              {t.nav.integration}
             </button>
             <button
-              className="text-[13px] font-medium text-foreground/70 transition-colors hover:text-foreground"
+              className="text-[13px] font-bold uppercase tracking-wider transition-colors hover:underline"
               onClick={() => scrollTo("steps")}
-              data-testid="button-nav-steps"
             >
-              Steps
+              {t.nav.steps}
             </button>
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <Button
-              variant="ghost"
-              className="hidden md:inline-flex"
-              onClick={() => scrollTo("cta")}
-              data-testid="button-talk"
+              variant="outline"
+              size="sm"
+              onClick={toggleLang}
+              className="h-8 rounded-none border-black font-bold uppercase tracking-tighter"
             >
-              Talk to us
+              <Globe className="mr-2 h-3.5 w-3.5" />
+              {lang === "en" ? "ES" : "EN"}
             </Button>
-            <Button onClick={() => scrollTo("device")} data-testid="button-see-action">
-              See it in action
-              <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
+            <Button
+              className="h-10 rounded-none bg-black px-6 font-bold uppercase tracking-widest text-white hover:bg-black/90"
+              onClick={() => scrollTo("device")}
+            >
+              {t.nav.action}
             </Button>
           </div>
         </div>
       </header>
 
-      <section id="hero" className="relative ilnaj-shadow-gradient-hero">
+      <section id="hero" className="relative ilnaj-shadow-gradient-hero overflow-hidden">
         <FloatingShapes />
         <div className="mx-auto max-w-[1200px] px-6 pb-24 pt-28 md:pb-28 md:pt-40">
           <div className="grid items-center gap-14 md:grid-cols-12">
-            <div className="md:col-span-7 md:col-start-2">
+            <div className="md:col-span-7 md:col-start-2 relative z-10">
               <motion.h1
-                initial={reduceMotion ? false : { opacity: 0, y: 10 }}
-                animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, ease: [0.2, 0.8, 0.2, 1] }}
-                className="text-balance text-[42px] font-semibold leading-[1.06] tracking-[-0.04em] text-foreground md:text-[72px]"
-                data-testid="text-hero-title"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7 }}
+                className="text-balance text-[42px] font-black leading-[1.05] tracking-tighter md:text-[80px] uppercase"
               >
-                Your customers book, buy, and get help.
-                <br />
-                While you sleep.
+                {t.hero.title}
                 <span className="ilnaj-typing-cursor" aria-hidden />
               </motion.h1>
 
               <motion.p
-                initial={reduceMotion ? false : { opacity: 0, y: 10 }}
-                animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.08, ease: [0.2, 0.8, 0.2, 1] }}
-                className="mt-7 max-w-[46rem] text-pretty text-[18px] leading-relaxed text-muted-foreground md:text-[24px]"
-                data-testid="text-hero-subtitle"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.1 }}
+                className="mt-8 max-w-[44rem] text-[18px] font-medium leading-relaxed text-black/70 md:text-[22px]"
               >
-                ILNAJ deploys intelligent conversational assistants on your website. Sales, appointments, and support
-— automated with precision.
+                {t.hero.subtitle}
               </motion.p>
 
               <motion.div
-                initial={reduceMotion ? false : { opacity: 0, y: 10 }}
-                animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.14, ease: [0.2, 0.8, 0.2, 1] }}
-                className="mt-9 flex flex-wrap items-center gap-3"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.2 }}
+                className="mt-10 flex flex-wrap items-center gap-4"
               >
                 <Button
-                  className="h-12 rounded-xl px-6"
+                  className="h-14 rounded-none bg-black px-10 text-[15px] font-black uppercase tracking-widest text-white hover:bg-black/90"
                   onClick={() => scrollTo("device")}
-                  data-testid="button-hero-primary"
                 >
-                  See it in action
+                  {t.hero.cta_primary}
                 </Button>
                 <Button
                   variant="outline"
-                  className="h-12 rounded-xl border-primary text-primary hover:bg-primary/5"
+                  className="h-14 rounded-none border-2 border-black bg-transparent px-10 text-[15px] font-black uppercase tracking-widest text-black hover:bg-black/5"
                   onClick={() => scrollTo("cta")}
-                  data-testid="button-hero-secondary"
                 >
-                  Talk to us
+                  {t.hero.cta_secondary}
                 </Button>
               </motion.div>
 
-              <div className="mt-10 flex flex-wrap items-center gap-2 text-[12px] text-foreground/50">
-                <span className="rounded-full bg-black/5 px-3 py-1.5" data-testid="badge-availability">
-                  Available in continuous operation
-                </span>
-                <span className="rounded-full bg-black/5 px-3 py-1.5" data-testid="badge-multilingual">
-                  Native multi-language
-                </span>
-                <span className="rounded-full bg-black/5 px-3 py-1.5" data-testid="badge-whitelabel">
-                  Full white-label
-                </span>
+              <div className="mt-12 flex flex-wrap items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-black/40">
+                <span className="border border-black/10 px-3 py-1">{t.hero.badge1}</span>
+                <span className="border border-black/10 px-3 py-1">{t.hero.badge2}</span>
+                <span className="border border-black/10 px-3 py-1">{t.hero.badge3}</span>
               </div>
             </div>
 
-            <div className="md:col-span-4 md:col-start-9">
+            <div className="md:col-span-4 md:col-start-9 relative z-10">
               <motion.div
-                initial={reduceMotion ? false : { opacity: 0, y: 16, rotateX: 14 }}
-                animate={reduceMotion ? undefined : { opacity: 1, y: 0, rotateX: 0 }}
-                transition={{ duration: 0.9, ease: [0.2, 0.8, 0.2, 1] }}
-                style={{ transformStyle: "preserve-3d" }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8 }}
               >
-                <MicroConversation />
+                <MicroConversation lang={lang} />
               </motion.div>
             </div>
           </div>
         </div>
-
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-white" />
       </section>
 
       <section id="features" className="relative ilnaj-shadow-gradient-features">
-        <FloatingShapes />
         <div className="mx-auto max-w-[1200px] px-6 py-24 md:py-28">
-          <div className="mx-auto max-w-[780px] text-center">
-            <div className="text-[12px] font-semibold tracking-[0.18em] text-foreground/50" data-testid="text-features-kicker">
-              HOW ILNAJ WORKS
+          <div className="mx-auto max-w-[800px] text-center">
+            <div className="text-[13px] font-black tracking-[0.25em] text-black/40 uppercase">
+              {t.features.kicker}
             </div>
-            <h2
-              className="mt-4 text-balance text-[34px] font-semibold leading-tight tracking-[-0.03em] md:text-[48px]"
-              data-testid="text-features-title"
-            >
-              Three business processes. One assistant.
+            <h2 className="mt-6 text-[34px] font-black leading-tight tracking-tighter md:text-[56px] uppercase">
+              {t.features.title}
             </h2>
-            <p className="mt-5 text-pretty text-[18px] leading-relaxed text-muted-foreground" data-testid="text-features-subtitle">
-              Designed for commerce, bookings, and support
-— modular, brand-adaptive, and always on.
+            <p className="mt-6 text-[18px] font-medium text-black/60">
+              {t.features.subtitle}
             </p>
           </div>
 
-          <div className="mt-14 grid gap-6 md:grid-cols-3 md:gap-8">
+          <div className="mt-16 grid gap-0 md:grid-cols-3">
             <FeatureCard
-              icon={<CreditCard className="h-6 w-6" aria-hidden />}
-              title="Automated commerce"
-              description="The assistant presents your catalog, checks real-time inventory, and generates Stripe payment links. Purchases complete without manual intervention."
+              icon={<CreditCard className="h-6 w-6" />}
+              title={t.features.card1.title}
+              description={t.features.card1.desc}
               testId="card-feature-commerce"
-              offset={-8}
             />
             <FeatureCard
-              icon={<Calendar className="h-6 w-6" aria-hidden />}
-              title="Appointment management"
-              description="Clients choose their time slot, the assistant syncs your calendar and sends confirmations. Works 24/7, including weekends."
+              icon={<Calendar className="h-6 w-6" />}
+              title={t.features.card2.title}
+              description={t.features.card2.desc}
               testId="card-feature-appointments"
-              offset={0}
             />
             <FeatureCard
-              icon={<MessageCircle className="h-6 w-6" aria-hidden />}
-              title="Intelligent support"
-              description="Answers FAQs based on your documentation and product details. Escalates to email or phone when human judgment is needed."
+              icon={<MessageCircle className="h-6 w-6" />}
+              title={t.features.card3.title}
+              description={t.features.card3.desc}
               testId="card-feature-support"
-              offset={-8}
             />
           </div>
         </div>
@@ -513,102 +592,68 @@ export default function Landing() {
       <section id="integration" className="relative ilnaj-shadow-gradient-integration">
         <div className="mx-auto max-w-[1200px] px-6 py-24 md:py-28">
           <div className="mx-auto max-w-[860px] text-center">
-            <div className="text-[12px] font-semibold tracking-[0.18em] text-foreground/50" data-testid="text-integration-kicker">
-              TECHNICAL
+            <div className="text-[13px] font-black tracking-[0.25em] text-black/40 uppercase">
+              {t.integration.kicker}
             </div>
-            <h2
-              className="mt-4 text-balance text-[34px] font-semibold leading-tight tracking-[-0.03em] md:text-[48px]"
-              data-testid="text-integration-title"
-            >
-              Invisible by design
+            <h2 className="mt-6 text-[34px] font-black leading-tight tracking-tighter md:text-[56px] uppercase">
+              {t.integration.title}
             </h2>
-            <p className="mt-5 text-pretty text-[18px] leading-relaxed text-muted-foreground" data-testid="text-integration-subtitle">
-              ILNAJ integrates into your website with a single line of code. No conflicts, no complexity
-— just a widget that works everywhere.
+            <p className="mt-6 text-[18px] font-medium text-black/60">
+              {t.integration.subtitle}
             </p>
           </div>
 
           <div className="mx-auto mt-10 flex max-w-[820px] flex-wrap items-center justify-center gap-3">
-            <span className="rounded-full bg-black/5 px-4 py-2 text-[13px] font-medium text-foreground/70" data-testid="badge-integration-1">
-              30d Native multi-language
-            </span>
-            <span className="rounded-full bg-black/5 px-4 py-2 text-[13px] font-medium text-foreground/70" data-testid="badge-integration-2">
-              3a8 Adapts to your brand
-            </span>
-            <span className="rounded-full bg-black/5 px-4 py-2 text-[13px] font-medium text-foreground/70" data-testid="badge-integration-3">
-              261 Realistic typing effect
-            </span>
+            {[t.integration.badge1, t.integration.badge2, t.integration.badge3].map((b, i) => (
+              <span key={i} className="border border-black px-4 py-2 text-[12px] font-black uppercase tracking-widest">
+                {b}
+              </span>
+            ))}
           </div>
 
-          <div className="mx-auto mt-12 max-w-[820px]">
-            <div
-              className="ilnaj-active-border rounded-2xl bg-[#111113] p-6 shadow-lg ring-1 ring-white/10"
-              data-testid="card-code-mock"
-            >
-              <div className="flex items-center justify-between">
-                <div className="text-[12px] font-semibold tracking-[0.16em] text-white/50" data-testid="text-code-label">
-                  INSTALLATION
-                </div>
-                <div className="text-[12px] text-white/40" data-testid="text-code-meta">
-                  1 line
-                </div>
-              </div>
-              <pre className="mt-4 overflow-auto rounded-xl bg-black/40 p-4 text-[13px] leading-relaxed text-emerald-300" data-testid="text-code">
+          <div className="mx-auto mt-14 max-w-[820px]">
+            <div className="rounded-none bg-black p-8 shadow-2xl">
+              <pre className="overflow-auto text-[14px] font-mono leading-relaxed text-white">
 {`<script src=\"https://ilnaj.ai/widget.js\"></script>
 <!-- Installation complete -->`}
               </pre>
-              <div className="mt-4 text-[13px] text-white/55" data-testid="text-code-caption">
-                Compatible with all web environments.
-              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="device" className="relative bg-white">
+      <section id="device" className="relative bg-white border-y border-black">
         <div className="mx-auto max-w-[1200px] px-6 py-24 md:py-28">
           <div className="grid items-center gap-12 md:grid-cols-12">
             <div className="md:col-span-6 md:col-start-2">
-              <div className="text-[12px] font-semibold tracking-[0.18em] text-foreground/50" data-testid="text-device-kicker">
-                PREVIEW
+              <div className="text-[13px] font-black tracking-[0.25em] text-black/40 uppercase">
+                {t.device.kicker}
               </div>
-              <h2
-                className="mt-4 text-balance text-[34px] font-semibold leading-tight tracking-[-0.03em] md:text-[48px]"
-                data-testid="text-device-title"
-              >
-                A live micro-conversation
-— on a loop.
+              <h2 className="mt-6 text-[34px] font-black leading-tight tracking-tighter md:text-[56px] uppercase">
+                {t.device.title}
               </h2>
-              <p className="mt-5 text-pretty text-[18px] leading-relaxed text-muted-foreground" data-testid="text-device-subtitle">
-                Visitors understand the workflow in seconds: proactive help, structured intent, and a clear outcome.
+              <p className="mt-6 text-[18px] font-medium text-black/60">
+                {t.device.subtitle}
               </p>
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="mt-10 flex flex-wrap gap-4">
+                <Button
+                  className="h-12 rounded-none bg-black px-8 font-black uppercase tracking-widest text-white"
+                  onClick={() => scrollTo("cta")}
+                >
+                  {t.device.cta}
+                </Button>
                 <Button
                   variant="outline"
-                  className="h-12 rounded-xl border-black/10 bg-white"
-                  onClick={() => scrollTo("cta")}
-                  data-testid="button-device-cta"
+                  className="h-12 rounded-none border-2 border-black font-black uppercase tracking-widest text-black"
+                  onClick={() => scrollTo("steps")}
                 >
-                  Talk to us
-                </Button>
-                <Button className="h-12 rounded-xl px-6" onClick={() => scrollTo("steps")} data-testid="button-device-steps">
-                  See setup steps
-                  <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
+                  {t.device.steps}
                 </Button>
               </div>
             </div>
 
             <div className="md:col-span-4 md:col-start-9">
-              <motion.div
-                initial={reduceMotion ? false : { opacity: 0, y: 40, rotateX: 15 }}
-                whileInView={reduceMotion ? undefined : { opacity: 1, y: 0, rotateX: 0 }}
-                viewport={{ once: true, amount: 0.4 }}
-                transition={{ duration: 0.9, ease: [0.2, 0.8, 0.2, 1] }}
-                style={{ transformStyle: "preserve-3d" }}
-                data-testid="device-mockup"
-              >
-                <MicroConversation />
-              </motion.div>
+              <MicroConversation lang={lang} />
             </div>
           </div>
         </div>
@@ -617,118 +662,30 @@ export default function Landing() {
       <section id="steps" className="relative bg-white">
         <div className="mx-auto max-w-[1200px] px-6 py-24 md:py-28">
           <div className="mx-auto max-w-[820px] text-center">
-            <div className="text-[12px] font-semibold tracking-[0.18em] text-foreground/50" data-testid="text-steps-kicker">
-              INSTALLATION
+            <div className="text-[13px] font-black tracking-[0.25em] text-black/40 uppercase">
+              {t.steps.kicker}
             </div>
-            <h2
-              className="mt-4 text-balance text-[34px] font-semibold leading-tight tracking-[-0.03em] md:text-[48px]"
-              data-testid="text-steps-title"
-            >
-              From snippet to live assistant.
+            <h2 className="mt-6 text-[34px] font-black leading-tight tracking-tighter md:text-[56px] uppercase">
+              {t.steps.title}
             </h2>
-            <p className="mt-5 text-pretty text-[18px] leading-relaxed text-muted-foreground" data-testid="text-steps-subtitle">
-              Four steps, designed to stay out of your way.
+            <p className="mt-6 text-[18px] font-medium text-black/60">
+              {t.steps.subtitle}
             </p>
           </div>
 
-          <div className="mx-auto mt-12 max-w-[1100px]">
-            <div className="relative">
-              <div className="absolute left-6 right-6 top-6 hidden h-px bg-gradient-to-r from-violet-500/0 via-violet-500/30 to-blue-500/0 md:block" aria-hidden />
-              <div className="grid gap-6 md:grid-cols-4">
-                {[
-                  {
-                    n: "1",
-                    title: "Installation (2 min)",
-                    desc: "Copy one line of code. Compatible with all web environments.",
-                  },
-                  {
-                    n: "2",
-                    title: "Business configuration (5 min)",
-                    desc: "Enter your services, pricing, and availability. The assistant memorizes your catalog instantly.",
-                  },
-                  {
-                    n: "3",
-                    title: "Customization (3 min)",
-                    desc: "Adjust colors, tone, and language to match your brand identity.",
-                  },
-                  {
-                    n: "4",
-                    title: "Go live (Immediate)",
-                    desc: "The assistant starts processing requests, booking appointments, or closing sales.",
-                  },
-                ].map((s) => (
-                  <div
-                    key={s.n}
-                    className="ilnaj-active-border rounded-3xl bg-white p-7 shadow-sm ring-1 ring-black/5"
-                    data-testid={`card-step-${s.n}`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-violet-500 to-blue-500 text-[14px] font-semibold text-white shadow-sm"
-                        data-testid={`text-step-number-${s.n}`}
-                      >
-                        {s.n}
-                      </div>
-                      <div className="text-[16px] font-semibold tracking-[-0.01em]" data-testid={`text-step-title-${s.n}`}>
-                        {s.title}
-                      </div>
-                    </div>
-                    <p className="mt-4 text-[14px] leading-relaxed text-muted-foreground" data-testid={`text-step-desc-${s.n}`}>
-                      {s.desc}
-                    </p>
+          <div className="mx-auto mt-16 max-w-[1100px]">
+            <div className="grid gap-0 md:grid-cols-4">
+              {[t.steps.s1, t.steps.s2, t.steps.s3, t.steps.s4].map((s, i) => (
+                <div key={i} className="border border-black p-8 bg-white transition-colors hover:bg-black hover:text-white group">
+                  <div className="text-[48px] font-black tracking-tighter group-hover:text-white/20 text-black/10 leading-none">
+                    0{i + 1}
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="cta" className="relative ilnaj-shadow-gradient-cta">
-        <FloatingShapes />
-        <div className="mx-auto max-w-[1200px] px-6 py-24 md:py-28">
-          <div className="mx-auto max-w-[980px] rounded-[32px] bg-white/70 p-10 shadow-md ring-1 ring-black/5 backdrop-blur md:p-14">
-            <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
-              <div>
-                <div className="text-[12px] font-semibold tracking-[0.18em] text-foreground/50" data-testid="text-cta-kicker">
-                  READY
-                </div>
-                <h2
-                  className="mt-4 text-balance text-[32px] font-semibold leading-tight tracking-[-0.03em] md:text-[44px]"
-                  data-testid="text-cta-title"
-                >
-                  Put a conversation layer
-— on your site.
-                </h2>
-                <p className="mt-4 max-w-[44rem] text-pretty text-[16px] leading-relaxed text-muted-foreground" data-testid="text-cta-subtitle">
-                  One assistant for commerce, bookings, and support. Modular, multilingual, and white-label.
-                </p>
-              </div>
-
-              <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-                <Button className="h-12 rounded-xl px-6" data-testid="button-cta-primary">
-                  Talk to us
-                </Button>
-                <Button
-                  variant="outline"
-                  className="h-12 rounded-xl border-primary text-primary hover:bg-primary/5"
-                  onClick={() => scrollTo("hero")}
-                  data-testid="button-cta-secondary"
-                >
-                  Back to top
-                </Button>
-              </div>
-            </div>
-
-            <div className="mt-8 grid gap-4 rounded-2xl bg-white p-5 ring-1 ring-black/5 md:grid-cols-3">
-              {[
-                { label: "Deployment", value: "Single snippet" },
-                { label: "Availability", value: "Continuous operation" },
-                { label: "Branding", value: "Full white-label" },
-              ].map((i) => (
-                <div key={i.label} data-testid={`stat-${i.label.toLowerCase()}`}>
-                  <div className="text-[12px] font-semibold tracking-[0.14em] text-foreground/50">{i.label}</div>
-                  <div className="mt-2 text-[15px] font-semibold tracking-[-0.01em]">{i.value}</div>
+                  <div className="mt-6 text-[16px] font-black uppercase tracking-tighter">
+                    {s.title}
+                  </div>
+                  <p className="mt-4 text-[14px] leading-relaxed opacity-70">
+                    {s.desc}
+                  </p>
                 </div>
               ))}
             </div>
@@ -736,39 +693,64 @@ export default function Landing() {
         </div>
       </section>
 
-      <footer className="ilnaj-footer-solid border-t border-black/5">
-        <div className="mx-auto max-w-[1200px] px-6 py-10">
-          <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
-            <div>
-              <div className="text-[14px] font-semibold tracking-[-0.02em]" data-testid="text-footer-brand">
-                ILNAJ
+      <section id="cta" className="relative border-t border-black bg-white">
+        <div className="mx-auto max-w-[1200px] px-6 py-24 md:py-28">
+          <div className="border-[4px] border-black p-10 md:p-16">
+            <div className="flex flex-col items-start justify-between gap-10 md:flex-row md:items-center">
+              <div>
+                <div className="text-[13px] font-black tracking-[0.25em] text-black/40 uppercase">
+                  {t.cta.kicker}
+                </div>
+                <h2 className="mt-6 text-[32px] font-black leading-tight tracking-tighter md:text-[56px] uppercase">
+                  {t.cta.title}
+                </h2>
+                <p className="mt-6 max-w-[40rem] text-[18px] font-medium text-black/60">
+                  {t.cta.subtitle}
+                </p>
               </div>
-              <div className="mt-2 text-[13px] text-foreground/60" data-testid="text-footer-tagline">
-                Conversational automation for commerce, bookings, and support.
+
+              <div className="flex w-full flex-col gap-4 sm:w-auto sm:flex-row">
+                <Button className="h-16 rounded-none bg-black px-10 text-[16px] font-black uppercase tracking-widest text-white">
+                  {t.cta.primary}
+                </Button>
+                <Button
+                  variant="outline"
+                  className="h-16 rounded-none border-2 border-black font-black uppercase tracking-widest"
+                  onClick={() => scrollTo("hero")}
+                >
+                  {t.cta.secondary}
+                </Button>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
 
-            <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-[13px] text-foreground/60">
-              <a href="#features" className="hover:text-foreground" data-testid="link-footer-features">
-                How it works
-              </a>
-              <a href="#integration" className="hover:text-foreground" data-testid="link-footer-integration">
-                Integration
-              </a>
-              <a href="#steps" className="hover:text-foreground" data-testid="link-footer-steps">
-                Steps
-              </a>
-              <a href="#cta" className="hover:text-foreground" data-testid="link-footer-cta">
-                Contact
-              </a>
+      <footer className="border-t border-black bg-white">
+        <div className="mx-auto max-w-[1200px] px-6 py-16">
+          <div className="flex flex-col items-start justify-between gap-10 md:flex-row md:items-center">
+            <div>
+              <div className="text-[24px] font-black tracking-tighter uppercase">ILNAJ</div>
+              <p className="mt-4 text-[14px] font-medium text-black/50 max-w-[300px]">
+                Conversational automation for commerce, bookings, and support.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-x-16 gap-y-4 text-[13px] font-black uppercase tracking-widest">
+              <button onClick={() => scrollTo("features")} className="hover:underline text-left">{t.nav.features}</button>
+              <button onClick={() => scrollTo("integration")} className="hover:underline text-left">{t.nav.integration}</button>
+              <button onClick={() => scrollTo("steps")} className="hover:underline text-left">{t.nav.steps}</button>
+              <button onClick={() => scrollTo("cta")} className="hover:underline text-left">Contact</button>
             </div>
           </div>
 
-          <div className="mt-8 flex flex-col gap-2 border-t border-black/10 pt-6 text-[12px] text-foreground/50 md:flex-row md:items-center md:justify-between">
-            <div data-testid="text-footer-copyright">
-              9 {new Date().getFullYear()} ILNAJ. All rights reserved.
+          <div className="mt-16 flex flex-col gap-4 border-t border-black pt-8 text-[11px] font-bold uppercase tracking-[0.2em] text-black/40 md:flex-row md:items-center md:justify-between">
+            <div>
+              © {new Date().getFullYear()} ILNAJ. All rights reserved.
             </div>
-            <div data-testid="text-footer-note">Prototype UI  a0 b7 a0 No backend connected</div>
+            <div>
+              Prototype UI — No backend connected
+            </div>
           </div>
         </div>
       </footer>
