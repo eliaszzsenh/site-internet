@@ -39,31 +39,31 @@ function OrbitingSquares() {
   return (
     <div className="flex items-center justify-center h-full w-full py-2">
       <div className="relative flex items-center justify-center w-12 h-12">
-        {/* Central Square */}
+        {/* Central Square - White because button is black */}
         <motion.div 
-          className="absolute w-4 h-4 bg-black"
+          className="absolute w-4 h-4 bg-white"
           initial={{ scale: 0.8 }}
-          animate={{ scale: [0.8, 1.2, 0.8] }}
+          animate={{ scale: [0.8, 1.2, 0.8], rotate: 90 }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         />
         
-        {/* Orbiting Squares */}
+        {/* Orbiting Squares - White because button is black */}
         {[0, 90, 180, 270].map((deg, i) => (
           <motion.div
             key={i}
-            className="absolute w-1.5 h-1.5 bg-black"
+            className="absolute w-1.5 h-1.5"
             style={{ rotate: deg }}
             animate={{ rotate: deg + 360 }}
             transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
           >
             <motion.div 
-              className="w-full h-full bg-black"
-              style={{ x: 20 }} // Distance from center
+              className="w-full h-full bg-white"
+              style={{ x: 24 }} // Increased distance from center
             />
           </motion.div>
         ))}
       </div>
-      <span className="ml-4 font-bold text-[14px] uppercase tracking-widest">Generating...</span>
+      <span className="ml-6 font-bold text-[14px] uppercase tracking-widest text-white">Generating...</span>
     </div>
   );
 }
@@ -154,9 +154,23 @@ export function WebsitePreview() {
   if (previewUrl) {
     return (
       <div className="w-full max-w-xl mx-auto flex flex-col items-center justify-center p-8 border-2 border-black bg-white gap-6">
-        {/* Custom Black Square with White Checkmark */}
+        {/* Custom Black Square with Sharp White Checkmark */}
         <div className="h-16 w-16 bg-black flex items-center justify-center">
-          <Check className="h-8 w-8 text-white stroke-[4]" />
+          <svg 
+            width="32" 
+            height="32" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path 
+              d="M20 6L9 17L4 12" 
+              stroke="white" 
+              strokeWidth="4" 
+              strokeLinecap="square" 
+              strokeLinejoin="miter"
+            />
+          </svg>
         </div>
         
         <div className="text-[24px] font-bold text-black uppercase tracking-tight">
