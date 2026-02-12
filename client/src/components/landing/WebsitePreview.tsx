@@ -37,55 +37,6 @@ const step2Schema = z.object({
 type Step1Data = z.infer<typeof step1Schema>;
 type Step2Data = z.infer<typeof step2Schema>;
 
-// Loading Animation Component - Standalone "Quadratic" Motion
-function OrbitingSquares() {
-  const duration = 2;
-  const ease = "easeInOut";
-
-  return (
-    <div className="flex flex-col items-center justify-center w-full h-[300px] border-2 border-black bg-white">
-      <div className="relative w-16 h-16">
-        {/* Central Static Square */}
-        <div className="absolute top-1/2 left-1/2 w-6 h-6 bg-black -translate-x-1/2 -translate-y-1/2" />
-        
-        {/* Orbiting Square 1 - Clockwise along perimeter */}
-        <motion.div
-          className="absolute w-3 h-3 bg-black"
-          animate={{
-            top: [0, 0, "100%", "100%", 0],
-            left: [0, "100%", "100%", 0, 0],
-          }}
-          transition={{
-            duration: duration,
-            ease: ease,
-            repeat: Infinity,
-            times: [0, 0.25, 0.5, 0.75, 1]
-          }}
-        />
-
-        {/* Orbiting Square 2 - Counter-Clockwise (starts opposite) */}
-        <motion.div
-          className="absolute w-3 h-3 bg-black"
-          initial={{ top: "100%", left: "100%" }}
-          animate={{
-            top: ["100%", "100%", 0, 0, "100%"],
-            left: ["100%", 0, 0, "100%", "100%"],
-          }}
-          transition={{
-            duration: duration,
-            ease: ease,
-            repeat: Infinity,
-            times: [0, 0.25, 0.5, 0.75, 1]
-          }}
-        />
-      </div>
-      <span className="mt-8 font-black text-[16px] uppercase tracking-[0.2em] text-black animate-pulse">
-        Analyzing Website...
-      </span>
-    </div>
-  );
-}
-
 export function WebsitePreview() {
   const { toast } = useToast();
   const [step, setStep] = useState<1 | 2>(1);
@@ -133,7 +84,7 @@ export function WebsitePreview() {
 
   const onStep2Submit = async (data: Step2Data) => {
     setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Removed 2 second delay for instant feedback per "keep it simple"
     
     try {
       const payload = { ...data, url, selectedLanguage: 'en' };
@@ -162,12 +113,9 @@ export function WebsitePreview() {
 
   if (isLoading) {
     return (
-      <div className="w-full max-w-2xl mx-auto">
-        <div className="mb-8 text-center">
-          <h2 className="text-[28px] font-black uppercase tracking-tighter mb-2">Processing</h2>
-          <p className="text-[16px] text-black/60 font-medium">Please wait while we generate your preview.</p>
-        </div>
-        <OrbitingSquares />
+      <div className="w-full max-w-2xl mx-auto border-2 border-black bg-white p-12 text-center">
+        <h2 className="text-[28px] font-black uppercase tracking-tighter mb-4 animate-pulse">GENERATING PREVIEW...</h2>
+        <p className="text-[16px] text-black/60 font-medium">Please wait while we prepare your demo.</p>
       </div>
     );
   }
@@ -392,7 +340,7 @@ export function WebsitePreview() {
               disabled={isLoading}
               className="h-16 w-full rounded-none bg-black text-[18px] font-black uppercase tracking-widest text-white hover:bg-black/90 transition-all"
             >
-              "See My Demo →"
+              {isLoading ? "Generating..." : "See My Demo →"}
             </Button>
           </form>
         )}
