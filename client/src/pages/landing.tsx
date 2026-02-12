@@ -90,7 +90,7 @@ const translations = {
       action: "Ver en acción",
     },
     hero: {
-      title: "Sus clientes reservan, compran y reciben ayuda. Mientras duerme.",
+      title: "Tus clientes reservan, compran y reciben ayuda. Mientras duermes.",
       subtitle: "ILNAJ despliega asistentes conversacionales inteligentes en su sitio web. Ventas, citas y soporte - automatizados con precisión.",
       cta_primary: "Ver en acción",
       cta_secondary: "Habla con nosotros",
@@ -291,7 +291,7 @@ function MicroConversation({ lang }: { lang: Lang }) {
 
   return (
     <div className="relative">
-      <div className="rounded-[44px] border border-black bg-white shadow-xl">
+      <div className="rounded-[44px] border-[3px] border-black bg-white shadow-xl">
         <div className="relative aspect-[9/19] overflow-hidden rounded-[44px] bg-white">
           <div className="absolute left-1/2 top-4 h-7 w-36 -translate-x-1/2 rounded-full bg-black" />
 
