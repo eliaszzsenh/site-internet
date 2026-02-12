@@ -25,9 +25,12 @@ const step1Schema = z.object({
 const step2Schema = z.object({
   businessName: z.string().min(1, "Business Name is required"),
   email: z.string().email("Valid email is required"),
-  phone: z.string().optional(),
   industry: z.string().optional(),
+  industryOther: z.string().optional(),
   companySize: z.string().optional(),
+  biggestChallenge: z.string().min(1, "Please select a challenge"),
+  challengeOther: z.string().optional(),
+  monthlyTraffic: z.string().min(1, "Please select monthly traffic"),
   notes: z.string().optional(),
 });
 
@@ -102,12 +105,18 @@ export function WebsitePreview() {
     defaultValues: {
       businessName: "",
       email: "",
-      phone: "",
       industry: "",
+      industryOther: "",
       companySize: "",
+      biggestChallenge: "",
+      challengeOther: "",
+      monthlyTraffic: "",
       notes: "",
     },
   });
+
+  const watchIndustry = form2.watch("industry");
+  const watchChallenge = form2.watch("biggestChallenge");
 
   const onStep1Submit = (data: Step1Data) => {
     setUrl(data.url);
@@ -127,7 +136,7 @@ export function WebsitePreview() {
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     try {
-      const payload = { ...data, url };
+      const payload = { ...data, url, selectedLanguage: 'en' };
       const response = await fetch('/api/demo-preview/create', {
         method: 'POST',
         headers: { 
@@ -277,18 +286,7 @@ export function WebsitePreview() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="block text-[14px] font-bold uppercase tracking-wide">Phone Number</label>
-                <Input
-                  {...form2.register("phone")}
-                  type="tel"
-                  placeholder="+1 234 567 890"
-                  className="h-12 border-2 border-black rounded-none px-4 text-[16px] focus-visible:ring-0"
-                  disabled={isLoading}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-[14px] font-bold uppercase tracking-wide">Industry</label>
+                <label className="block text-[14px] font-bold uppercase tracking-wide">Industry *</label>
                 <Select onValueChange={(val) => form2.setValue("industry", val)} disabled={isLoading}>
                   <SelectTrigger className="h-12 border-2 border-black rounded-none px-4 text-[16px] focus:ring-0">
                     <SelectValue placeholder="Select..." />
@@ -302,25 +300,81 @@ export function WebsitePreview() {
                     <SelectItem value="realestate">Real Estate</SelectItem>
                     <SelectItem value="education">Education</SelectItem>
                     <SelectItem value="technology">Technology</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
+                    <SelectItem value="other">Other (please specify)</SelectItem>
+                  </SelectContent>
+                </Select>
+                {watchIndustry === "other" && (
+                  <Input
+                    {...form2.register("industryOther")}
+                    placeholder="Please specify industry"
+                    className="h-12 border-2 border-black rounded-none px-4 text-[16px] focus-visible:ring-0 mt-2 border-l-[4px]"
+                  />
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-[14px] font-bold uppercase tracking-wide">Company Size</label>
+                <Select onValueChange={(val) => form2.setValue("companySize", val)} disabled={isLoading}>
+                  <SelectTrigger className="h-12 border-2 border-black rounded-none px-4 text-[16px] focus:ring-0">
+                    <SelectValue placeholder="Select size..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1-10">1-10 employees</SelectItem>
+                    <SelectItem value="11-50">11-50 employees</SelectItem>
+                    <SelectItem value="51-200">51-200 employees</SelectItem>
+                    <SelectItem value="201+">201+ employees</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="block text-[14px] font-bold uppercase tracking-wide">Company Size</label>
-              <Select onValueChange={(val) => form2.setValue("companySize", val)} disabled={isLoading}>
-                <SelectTrigger className="h-12 border-2 border-black rounded-none px-4 text-[16px] focus:ring-0">
-                  <SelectValue placeholder="Select size..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1-10">1-10 employees</SelectItem>
-                  <SelectItem value="11-50">11-50 employees</SelectItem>
-                  <SelectItem value="51-200">51-200 employees</SelectItem>
-                  <SelectItem value="201+">201+ employees</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="block text-[14px] font-bold uppercase tracking-wide">Biggest Challenge *</label>
+                <Select onValueChange={(val) => form2.setValue("biggestChallenge", val)} disabled={isLoading}>
+                  <SelectTrigger className="h-12 border-2 border-black rounded-none px-4 text-[16px] focus:ring-0">
+                    <SelectValue placeholder="Select challenge..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="getting_leads">Getting leads/traffic</SelectItem>
+                    <SelectItem value="converting">Converting visitors</SelectItem>
+                    <SelectItem value="bookings">Managing bookings</SelectItem>
+                    <SelectItem value="response_time">Response time</SelectItem>
+                    <SelectItem value="admin_work">Reducing admin work</SelectItem>
+                    <SelectItem value="other">Other (please specify)</SelectItem>
+                  </SelectContent>
+                </Select>
+                {form2.formState.errors.biggestChallenge && (
+                  <p className="text-red-500 text-xs font-bold uppercase">{form2.formState.errors.biggestChallenge.message}</p>
+                )}
+                {watchChallenge === "other" && (
+                  <Input
+                    {...form2.register("challengeOther")}
+                    placeholder="Describe your challenge"
+                    className="h-12 border-2 border-black rounded-none px-4 text-[16px] focus-visible:ring-0 mt-2 border-l-[4px]"
+                  />
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-[14px] font-bold uppercase tracking-wide">Monthly Traffic *</label>
+                <Select onValueChange={(val) => form2.setValue("monthlyTraffic", val)} disabled={isLoading}>
+                  <SelectTrigger className="h-12 border-2 border-black rounded-none px-4 text-[16px] focus:ring-0">
+                    <SelectValue placeholder="Select volume..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0-100">Less than 100</SelectItem>
+                    <SelectItem value="100-500">100 - 500</SelectItem>
+                    <SelectItem value="500-1000">500 - 1,000</SelectItem>
+                    <SelectItem value="1000-5000">1,000 - 5,000</SelectItem>
+                    <SelectItem value="5000+">5,000+</SelectItem>
+                    <SelectItem value="not_sure">Not sure</SelectItem>
+                  </SelectContent>
+                </Select>
+                {form2.formState.errors.monthlyTraffic && (
+                  <p className="text-red-500 text-xs font-bold uppercase">{form2.formState.errors.monthlyTraffic.message}</p>
+                )}
+              </div>
             </div>
 
             <div className="space-y-2">
