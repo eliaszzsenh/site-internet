@@ -18,87 +18,38 @@ import { ArrowRight, Check } from "lucide-react";
 
 // Loading Animation Component
 function OrbitingSquares() {
-  const duration = 2.5;
-  const ease = [0.4, 0, 0.2, 1]; // Custom easeInOut for acceleration/deceleration
-
   return (
     <div className="flex flex-col items-center justify-center py-12">
       <div className="relative w-20 h-20">
-        {/* Central Square - MUCH BIGGER */}
-        <div className="absolute top-1/2 left-1/2 w-12 h-12 bg-black -translate-x-1/2 -translate-y-1/2" />
+        {/* Central Square */}
+        <div className="absolute top-1/2 left-1/2 w-12 h-12 bg-black -translate-x-1/2 -translate-y-1/2 z-10" />
         
-        {/* Orbiting Squares - Positioned at corners of center square, swapping places */}
-        {/* Square 1: Top-left corner → Top-right corner */}
+        {/* Rotating container for orbiting squares */}
         <motion.div
-          className="absolute w-3 h-3 bg-black rounded-none"
-          style={{ marginTop: '-6px', marginLeft: '-6px' }}
-          initial={{ top: '12.5%', left: '12.5%' }}
-          animate={{
-            top: ['12.5%', '12.5%', '12.5%', '12.5%'],
-            left: ['12.5%', '72.5%', '72.5%', '12.5%'],
-          }}
+          className="absolute inset-0"
+          animate={{ rotate: 360 }}
           transition={{
-            duration,
-            ease,
-            repeat: Infinity,
-            times: [0, 0.5, 0.5, 1],
-            repeatDelay: 0.5
+            duration: 3,
+            ease: "linear",
+            repeat: Infinity
           }}
-        />
-        
-        {/* Square 2: Top-right corner → Bottom-right corner */}
-        <motion.div
-          className="absolute w-3 h-3 bg-white border-2 border-black rounded-none"
-          style={{ marginTop: '-6px', marginLeft: '-6px' }}
-          initial={{ top: '12.5%', left: '72.5%' }}
-          animate={{
-            top: ['12.5%', '72.5%', '72.5%', '12.5%'],
-            left: ['72.5%', '72.5%', '72.5%', '72.5%'],
-          }}
-          transition={{
-            duration,
-            ease,
-            repeat: Infinity,
-            times: [0, 0.5, 0.5, 1],
-            repeatDelay: 0.5
-          }}
-        />
-        
-        {/* Square 3: Bottom-right corner → Bottom-left corner */}
-        <motion.div
-          className="absolute w-3 h-3 bg-black rounded-none"
-          style={{ marginTop: '-6px', marginLeft: '-6px' }}
-          initial={{ top: '72.5%', left: '72.5%' }}
-          animate={{
-            top: ['72.5%', '72.5%', '72.5%', '72.5%'],
-            left: ['72.5%', '12.5%', '12.5%', '72.5%'],
-          }}
-          transition={{
-            duration,
-            ease,
-            repeat: Infinity,
-            times: [0, 0.5, 0.5, 1],
-            repeatDelay: 0.5
-          }}
-        />
-        
-        {/* Square 4: Bottom-left corner → Top-left corner */}
-        <motion.div
-          className="absolute w-3 h-3 bg-white border-2 border-black rounded-none"
-          style={{ marginTop: '-6px', marginLeft: '-6px' }}
-          initial={{ top: '72.5%', left: '12.5%' }}
-          animate={{
-            top: ['72.5%', '12.5%', '12.5%', '72.5%'],
-            left: ['12.5%', '12.5%', '12.5%', '12.5%'],
-          }}
-          transition={{
-            duration,
-            ease,
-            repeat: Infinity,
-            times: [0, 0.5, 0.5, 1],
-            repeatDelay: 0.5
-          }}
-        />
+        >
+          {/* Square 1: Top-left */}
+          <div className="absolute w-3 h-3 bg-black rounded-none"
+               style={{ top: '10%', left: '10%', marginTop: '-6px', marginLeft: '-6px' }} />
+          
+          {/* Square 2: Top-right */}
+          <div className="absolute w-3 h-3 bg-black rounded-none"
+               style={{ top: '10%', left: '90%', marginTop: '-6px', marginLeft: '-6px' }} />
+          
+          {/* Square 3: Bottom-right */}
+          <div className="absolute w-3 h-3 bg-black rounded-none"
+               style={{ top: '90%', left: '90%', marginTop: '-6px', marginLeft: '-6px' }} />
+          
+          {/* Square 4: Bottom-left */}
+          <div className="absolute w-3 h-3 bg-black rounded-none"
+               style={{ top: '90%', left: '10%', marginTop: '-6px', marginLeft: '-6px' }} />
+        </motion.div>
       </div>
     </div>
   );
@@ -173,7 +124,7 @@ export function WebsitePreview() {
   const onStep2Submit = async (data: Step2Data) => {
     setIsLoading(true);
     // Artificial delay to show "Generating..." state
-    await new Promise(resolve => setTimeout(resolve, 4000));
+    await new Promise(resolve => setTimeout(resolve, 1500));
     
     try {
       const payload = { ...data, url, selectedLanguage: 'en' };
