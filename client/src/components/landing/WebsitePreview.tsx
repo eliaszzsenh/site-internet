@@ -151,7 +151,11 @@ function OrbitingSquares({ isSuccess = false }: { isSuccess?: boolean }) {
 
 // Schema for Step 1
 const step1Schema = z.object({
-  url: z.string().url("Please enter a valid URL (e.g., https://example.com)"),
+  url: z.string().min(1, "URL is required").refine((val) => {
+    // Basic check to see if it looks like a domain or URL
+    const pattern = /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,})(\/.*)?$/i;
+    return pattern.test(val);
+  }, "Please enter a valid website (e.g., nike.com)"),
 });
 
 // Schema for Step 2
@@ -204,9 +208,15 @@ export function WebsitePreview() {
   const watchChallenge = form2.watch("biggestChallenge");
 
   const onStep1Submit = (data: Step1Data) => {
-    setUrl(data.url);
+    let finalUrl = data.url.trim();
+    // Prepend https:// if no protocol is specified
+    if (!/^https?:\/\//i.test(finalUrl)) {
+      finalUrl = `https://${finalUrl}`;
+    }
+    
+    setUrl(finalUrl);
     try {
-      const hostname = new URL(data.url).hostname;
+      const hostname = new URL(finalUrl).hostname;
       const domain = hostname.replace('www.', '').split('.')[0];
       const suggestedName = domain.charAt(0).toUpperCase() + domain.slice(1);
       form2.setValue("businessName", suggestedName);
@@ -223,9 +233,6 @@ export function WebsitePreview() {
       containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 100);
 
-    // Artificial delay to show "Generating..." state
-    await new Promise(resolve => setTimeout(resolve, 4000));
-    
     try {
       const payload = { ...data, url, selectedLanguage: 'en' };
       
