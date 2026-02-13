@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { insertContactSchema } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,8 +16,10 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
-const formSchema = insertContactSchema.extend({
+const formSchema = z.object({
+  name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"),
+  message: z.string().min(1, "Message is required"),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -36,7 +37,7 @@ export function ContactForm() {
 
   const mutation = useMutation({
     mutationFn: async (data: FormData) => {
-      await apiRequest("POST", "/api/contact", data);
+      await apiRequest("POST", "https://widget.crackito.uk/api/contact", data);
     },
     onSuccess: () => {
       toast({
