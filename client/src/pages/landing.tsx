@@ -229,15 +229,15 @@ export default function Landing() {
         </div>
 
         <div className="mx-auto max-w-[1200px] px-6 py-24 md:py-32">
-          <div className="grid items-center gap-20 md:grid-cols-12">
-            <div className="md:col-span-6 md:col-start-2">
+          <div className="grid items-center gap-16 md:grid-cols-12">
+            <div className="md:col-span-5">
               <div className="text-[13px] font-black tracking-[0.25em] text-black/40 uppercase">
                 {t.device.kicker}
               </div>
-              <h2 className="mt-6 text-[34px] font-black leading-tight tracking-tighter md:text-[56px] uppercase">
+              <h2 className="mt-6 text-[34px] font-black leading-tight tracking-tighter md:text-[48px] uppercase">
                 {t.device.title}
               </h2>
-              <p className="mt-6 text-[18px] font-medium text-black/60 max-w-lg">
+              <p className="mt-6 text-[18px] font-medium text-black/60">
                 Your AI assistant adapts instantly to the environment. Whether it's a mobile viewport or a high-resolution desktop screen, the performance remains sharp and the logic consistent.
               </p>
               <div className="mt-10 flex flex-wrap gap-4">
@@ -259,9 +259,7 @@ export default function Landing() {
 
             <div className="md:col-span-6 md:col-start-7">
               <BrowserFrame>
-                <div className="scale-[0.8] origin-bottom-right">
-                   <MicroConversation lang={lang} />
-                </div>
+                <MicroConversation lang={lang} />
               </BrowserFrame>
             </div>
           </div>
