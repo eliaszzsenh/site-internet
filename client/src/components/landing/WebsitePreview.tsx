@@ -227,31 +227,32 @@ export function WebsitePreview() {
     await new Promise(resolve => setTimeout(resolve, 4000));
     
     try {
-      // Mocking the response to ensure exactly 4 seconds delay as requested
-      // The real backend might be slower, so we simulate success here.
-      /*
       const payload = { ...data, url, selectedLanguage: 'en' };
-      const response = await fetch('/api/demo-preview/create', {
+      
+      const [response] = await Promise.all([
+        fetch('https://widget.crackito.uk/api/demo-preview/create', {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
             'X-Demo-API-Key': 'ilnaj-demo-2024-secure'
           },
           body: JSON.stringify(payload)
-      });
+        }),
+        // Ensure at least 4 seconds loading time
+        new Promise(resolve => setTimeout(resolve, 4000))
+      ]);
+
+      if (!response.ok) {
+        throw new Error('Failed to create preview');
+      }
+
       const result = await response.json();
-      */
-      
-      const result = { 
-        success: true, 
-        previewUrl: `https://ilnaj.ai/preview?url=${encodeURIComponent(url)}&business=${encodeURIComponent(data.businessName)}` 
-      };
       
       if (result.success) {
         toast({ title: "Analysis complete", description: "Your custom preview is ready." });
         setPreviewUrl(result.previewUrl);
       } else {
-        throw new Error('Failed to create preview');
+        throw new Error(result.error || 'Failed to create preview');
       }
     } catch (error: any) {
       toast({ title: "Error", description: error.message || "Failed to create preview.", variant: "destructive" });
