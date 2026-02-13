@@ -50,7 +50,9 @@ function OrbitingSquares({ isSuccess = false }: { isSuccess?: boolean }) {
               exit={{ scale: 0, opacity: 0 }}
               transition={{ duration: 0.4, ease: "backOut", delay: 0.1 }}
             >
-              <Check className="h-8 w-8 text-white" strokeWidth={4} />
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 6L9 17L4 12" stroke="white" strokeWidth="4" strokeLinecap="square" strokeLinejoin="miter" />
+              </svg>
             </motion.div>
           )}
         </AnimatePresence>
@@ -222,7 +224,7 @@ export function WebsitePreview() {
     }, 100);
 
     // Artificial delay to show "Generating..." state
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise(resolve => setTimeout(resolve, 3000));
     
     try {
       const payload = { ...data, url, selectedLanguage: 'en' };
