@@ -30,11 +30,12 @@ function OrbitingSquares() {
         {/* Orbiting Squares - Positioned at corners of center square, swapping places */}
         {/* Square 1: Top-left corner → Top-right corner */}
         <motion.div
-          className="absolute w-3 h-3 bg-black"
-          initial={{ top: "20%", left: "20%" }}
+          className="absolute w-3 h-3 bg-black rounded-none"
+          style={{ marginTop: '-6px', marginLeft: '-6px' }}
+          initial={{ top: '12.5%', left: '12.5%' }}
           animate={{
-            top: ["20%", "20%", "20%", "20%"],
-            left: ["20%", "80%", "80%", "20%"],
+            top: ['12.5%', '12.5%', '12.5%', '12.5%'],
+            left: ['12.5%', '72.5%', '72.5%', '12.5%'],
           }}
           transition={{
             duration,
@@ -47,11 +48,12 @@ function OrbitingSquares() {
         
         {/* Square 2: Top-right corner → Bottom-right corner */}
         <motion.div
-          className="absolute w-3 h-3 bg-black"
-          initial={{ top: "20%", left: "80%" }}
+          className="absolute w-3 h-3 bg-white border-2 border-black rounded-none"
+          style={{ marginTop: '-6px', marginLeft: '-6px' }}
+          initial={{ top: '12.5%', left: '72.5%' }}
           animate={{
-            top: ["20%", "80%", "80%", "20%"],
-            left: ["80%", "80%", "80%", "80%"],
+            top: ['12.5%', '72.5%', '72.5%', '12.5%'],
+            left: ['72.5%', '72.5%', '72.5%', '72.5%'],
           }}
           transition={{
             duration,
@@ -64,11 +66,12 @@ function OrbitingSquares() {
         
         {/* Square 3: Bottom-right corner → Bottom-left corner */}
         <motion.div
-          className="absolute w-3 h-3 bg-black"
-          initial={{ top: "80%", left: "80%" }}
+          className="absolute w-3 h-3 bg-black rounded-none"
+          style={{ marginTop: '-6px', marginLeft: '-6px' }}
+          initial={{ top: '72.5%', left: '72.5%' }}
           animate={{
-            top: ["80%", "80%", "80%", "80%"],
-            left: ["80%", "20%", "20%", "80%"],
+            top: ['72.5%', '72.5%', '72.5%', '72.5%'],
+            left: ['72.5%', '12.5%', '12.5%', '72.5%'],
           }}
           transition={{
             duration,
@@ -81,11 +84,12 @@ function OrbitingSquares() {
         
         {/* Square 4: Bottom-left corner → Top-left corner */}
         <motion.div
-          className="absolute w-3 h-3 bg-black"
-          initial={{ top: "80%", left: "20%" }}
+          className="absolute w-3 h-3 bg-white border-2 border-black rounded-none"
+          style={{ marginTop: '-6px', marginLeft: '-6px' }}
+          initial={{ top: '72.5%', left: '12.5%' }}
           animate={{
-            top: ["80%", "20%", "20%", "80%"],
-            left: ["20%", "20%", "20%", "20%"],
+            top: ['72.5%', '12.5%', '12.5%', '72.5%'],
+            left: ['12.5%', '12.5%', '12.5%', '12.5%'],
           }}
           transition={{
             duration,
