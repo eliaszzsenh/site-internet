@@ -1,105 +1,248 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Zap, MessageCircle, Calendar, CreditCard, Users, TrendingUp, X, Send, Bot } from "lucide-react";
+import { ArrowRight, Zap, MessageCircle, Calendar, CreditCard, Users, TrendingUp, X, Send, Bot, Coffee, Check } from "lucide-react";
 
-function LiveChatDemo({ lang }: { lang: "en" | "es" }) {
-  const [messages, setMessages] = useState<{from: string; text: string}[]>([]);
-  const [isTyping, setIsTyping] = useState(false);
-  const [step, setStep] = useState(0);
+function AnimatedCursor() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{ 
+        opacity: [0, 1, 1, 0],
+        scale: [0, 1.2, 1, 0.8],
+        x: [0, 180, 180, 180],
+        y: [0, 280, 280, 280]
+      }}
+      transition={{ duration: 2.5, times: [0, 0.1, 0.15, 1] }}
+      className="absolute pointer-events-none z-50"
+      style={{ top: 100, left: 100 }}
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M5.5 3.21V20.79C5.5 21.3 6.12 21.58 6.52 21.24L11.08 17.47C11.51 17.13 12.12 17.13 12.54 17.47L18.48 22.24C18.89 22.58 19.5 22.3 19.5 21.79V5.21C19.5 4.7 18.88 4.42 18.48 4.76L12.54 1.24C12.12 1.58 11.51 1.58 11.08 1.24L5.5 4.76C5.1 5.1 4.5 4.82 4.5 4.31" stroke="black" strokeWidth="1.5" fill="white"/>
+      </svg>
+    </motion.div>
+  );
+}
+
+function CoffeeChatDemo({ lang }: { lang: "en" | "es" }) {
+  const [stage, setStage] = useState<"idle" | "clicking" | "opening" | "greeting" | "recommending" | "selecting" | "processing" | "payment">("idle");
+  const [messages, setMessages] = useState<{from: "ai" | "user"; text: string; options?: string[]}[]>([]);
+  const [showCursor, setShowCursor] = useState(true);
+  const [widgetOpen, setWidgetOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [showPayment, setShowPayment] = useState(false);
 
   useEffect(() => {
-    const sequence = [
-      { from: "ai", text: lang === "en" ? "Hi! How can I help you today?" : "¡Hola! ¿Cómo puedo ayudarte hoy?" },
-      { from: "user", text: lang === "en" ? "I need to book an appointment" : "Necesito reservar una cita" },
-      { from: "ai", text: lang === "en" ? "Of course! What day works for you?" : "¡Por supuesto! ¿Qué día te funciona?" },
-      { from: "user", text: lang === "en" ? "Tomorrow at 3pm" : "Mañana a las 3pm" },
-      { from: "ai", text: lang === "en" ? "Perfect! Let me confirm that..." : "¡Perfecto! Déjame confirmar..." },
-    ];
-
-    let currentStep = 0;
-    const runSequence = () => {
-      if (currentStep >= sequence.length) return;
+    const sequence = async () => {
+      // Stage 1: Clicking (0-2s)
+      await new Promise(r => setTimeout(r, 500));
+      setStage("clicking");
+      await new Promise(r => setTimeout(r, 2000));
       
-      const msg = sequence[currentStep];
-      setMessages(prev => [...prev, { from: msg.from, text: msg.text }]);
+      // Stage 2: Opening (2-3s)
+      setShowCursor(false);
+      setWidgetOpen(true);
+      setStage("opening");
+      await new Promise(r => setTimeout(r, 800));
       
-      if (msg.from === "ai" && currentStep < sequence.length - 1) {
-        setIsTyping(true);
-        setTimeout(() => {
-          setIsTyping(false);
-          currentStep++;
-          runSequence();
-        }, 1500);
-      } else if (msg.from === "user") {
-        currentStep++;
-        setTimeout(runSequence, 500);
-      } else {
-        currentStep++;
-      }
+      // Stage 3: Greeting (3-5s)
+      setStage("greeting");
+      setMessages([{ from: "ai", text: lang === "en" ? "Hi! What can I get you today?" : "¡Hola! ¿Qué te puedo ofrecer hoy?" }]);
+      await new Promise(r => setTimeout(r, 2000));
+      
+      // Stage 4: User asks (5-6s)
+      setMessages([...messages, { from: "user", text: lang === "en" ? "Can I get a coffee recommendation?" : "¿Me puedes recomendar un café?" }]);
+      await new Promise(r => setTimeout(r, 1500));
+      
+      // Stage 5: AI Recommending (6-9s)
+      setStage("recommending");
+      setMessages(prev => [...prev, { 
+        from: "ai", 
+        text: lang === "en" ? "Of course! Here are our specials:" : "¡Por supuesto! Estas son nuestras especialidades:",
+        options: lang === "en" ? ["☕ Espresso", "🥛 Latte", "🍵 Matcha Latte", "🍪 Cookie Latte"] : ["☕ Espresso", "🥛 Latte", "🍵 Latte Matcha", "🍪 Latte de Galleta"]
+      }]);
+      await new Promise(r => setTimeout(r, 3000));
+      
+      // Stage 6: User selecting (9-10s)
+      setStage("selecting");
+      setSelectedOption(lang === "en" ? "Matcha Latte" : "Latte Matcha");
+      await new Promise(r => setTimeout(r, 1500));
+      
+      // Stage 7: Processing (10-12s)
+      setStage("processing");
+      setMessages(prev => [...prev, { from: "ai", text: lang === "en" ? "Great choice! One Matcha Latte coming up!" : "¡Excelente elección! ¡Un Latte Matcha en camino!" }]);
+      await new Promise(r => setTimeout(r, 2000));
+      
+      // Stage 8: Payment (12s+)
+      setStage("payment");
+      setShowPayment(true);
     };
 
-    const timer = setTimeout(runSequence, 500);
-    return () => clearTimeout(timer);
+    sequence();
   }, [lang]);
 
   return (
-    <div className="w-full max-w-xs mx-auto">
-      <div className="border-2 border-black bg-white">
-        {/* Chat Header */}
-        <div className="bg-black text-white px-4 py-3 flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-            <Bot className="w-4 h-4" />
-          </div>
-          <div>
-            <div className="text-xs font-black uppercase">AI Assistant</div>
-            <div className="text-[10px] text-white/60">Online now</div>
-          </div>
-        </div>
-        
-        {/* Messages */}
-        <div className="p-4 space-y-3 min-h-[200px] max-h-[200px] overflow-hidden bg-gray-50">
-          {messages.length === 0 && (
-            <div className="text-center text-[10px] text-black/30 py-8">
-              {lang === "en" ? "Starting conversation..." : "Iniciando conversación..."}
+    <div className="w-full max-w-md mx-auto relative">
+      {/* Cursor Animation */}
+      <AnimatePresence>
+        {stage === "clicking" && <AnimatedCursor />}
+      </AnimatePresence>
+
+      {/* Website Fake Content */}
+      <div className="relative bg-white" style={{ minHeight: "320px" }}>
+        {/* Fake website */}
+        <div className="absolute inset-0 p-6 opacity-[0.05]">
+          <div className="flex items-center justify-between mb-8">
+            <div className="h-6 w-20 bg-black" />
+            <div className="flex gap-4">
+              <div className="h-2 w-12 bg-black" />
+              <div className="h-2 w-12 bg-black" />
             </div>
-          )}
-          {messages.map((msg, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`text-xs p-2 ${msg.from === "ai" ? "bg-black text-white" : "bg-gray-200 text-black ml-8"}`}
-            >
-              {msg.text}
-            </motion.div>
-          ))}
-          {isTyping && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="bg-black text-white text-xs p-2 flex items-center gap-2"
-            >
-              <span className="flex gap-1">
-                <span className="w-1.5 h-1.5 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                <span className="w-1.5 h-1.5 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                <span className="w-1.5 h-1.5 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-              </span>
-            </motion.div>
-          )}
-        </div>
-        
-        {/* Quick Replies */}
-        {messages.length > 0 && messages[messages.length - 1].from === "ai" && (
-          <div className="p-2 border-t border-black/10 flex gap-2 overflow-x-auto">
-            <button className="text-[10px] bg-black text-white px-3 py-1.5 whitespace-nowrap font-medium">
-              {lang === "en" ? "Book now" : "Reservar ahora"}
-            </button>
-            <button className="text-[10px] border border-black px-3 py-1.5 whitespace-nowrap font-medium">
-              {lang === "en" ? "View slots" : "Ver horarios"}
-            </button>
           </div>
+          <div className="h-16 w-2/3 bg-black mb-4" />
+          <div className="space-y-2">
+            <div className="h-3 w-full bg-black" />
+            <div className="h-3 w-3/4 bg-black" />
+          </div>
+        </div>
+
+        {/* Chat Widget Button (when closed) */}
+        {!widgetOpen && (
+          <motion.button
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="absolute bottom-6 right-6 w-14 h-14 bg-black text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer"
+            style={{ bottom: 24, right: 24 }}
+          >
+            <MessageCircle className="w-6 h-6" />
+          </motion.button>
         )}
+
+        {/* Chat Widget (when open) */}
+        <AnimatePresence>
+          {widgetOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.9 }}
+              transition={{ duration: 0.3 }}
+              className="absolute bottom-6 right-6 w-80 border-2 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
+              style={{ bottom: 24, right: 24 }}
+            >
+              {/* Header */}
+              <div className="bg-black text-white px-4 py-3 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                    <Bot className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-black uppercase">AI Assistant</div>
+                    <div className="text-[10px] text-white/60 flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+                      Online
+                    </div>
+                  </div>
+                </div>
+                <button className="text-white/60 hover:text-white">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Messages */}
+              <div className="p-4 space-y-3 min-h-[180px] max-h-[180px] overflow-y-auto bg-gray-50">
+                {messages.map((msg, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`text-xs ${msg.from === "ai" ? "" : "ml-8"}`}
+                  >
+                    <div className={`p-2 ${msg.from === "ai" ? "bg-black text-white" : "bg-gray-200 text-black"}`}>
+                      {msg.text}
+                    </div>
+                    {/* Options */}
+                    {msg.options && (
+                      <div className="mt-2 space-y-1">
+                        {msg.options.map((opt, j) => (
+                          <motion.button
+                            key={j}
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: j * 0.1 }}
+                            className="w-full text-left text-xs p-2 border border-black hover:bg-black hover:text-white transition-colors"
+                            onClick={() => setSelectedOption(opt)}
+                          >
+                            {opt}
+                          </motion.button>
+                        ))}
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
+
+                {/* Processing indicator */}
+                {stage === "processing" && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="bg-black text-white text-xs p-2"
+                  >
+                    <span className="flex gap-1">
+                      {[0, 1, 2].map(i => (
+                        <span 
+                          key={i} 
+                          className="w-1.5 h-1.5 bg-white/60 rounded-full animate-bounce" 
+                          style={{ animationDelay: `${i * 150}ms` }} 
+                        />
+                      ))}
+                    </span>
+                  </motion.div>
+                )}
+
+                {/* Payment Button */}
+                <AnimatePresence>
+                  {showPayment && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="mt-3"
+                    >
+                      <div className="border-2 border-black p-3 bg-white">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Coffee className="w-4 h-4" />
+                          <span className="text-xs font-black">{selectedOption}</span>
+                          <span className="ml-auto text-xs font-bold">$5.50</span>
+                        </div>
+                        <button className="w-full bg-black text-white text-xs font-black py-2 flex items-center justify-center gap-2 hover:bg-gray-800">
+                          <CreditCard className="w-3 h-3" />
+                          PAY NOW
+                        </button>
+                        <div className="text-[8px] text-center text-black/40 mt-1">
+                          Powered by Stripe
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Input */}
+              {stage !== "payment" && (
+                <div className="border-t-2 border-black p-2 flex gap-2">
+                  <input 
+                    type="text" 
+                    placeholder={lang === "en" ? "Type a message..." : "Escribe un mensaje..."}
+                    className="flex-1 text-xs border border-black px-3 py-2 outline-none"
+                    disabled
+                  />
+                  <button className="w-8 h-8 bg-black text-white flex items-center justify-center">
+                    <Send className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
@@ -144,7 +287,7 @@ export default function DeviceSection({
   return (
     <section id="device" className="relative bg-white border-y border-black overflow-hidden">
       {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-64 h-64 border-2 border-black/5 rotate-12" />
         <div className="absolute bottom-20 right-10 w-96 h-96 border-2 border-black/5 -rotate-12" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-black/3 rounded-full" />
@@ -190,42 +333,14 @@ export default function DeviceSection({
                   </div>
                   <div className="flex-1 max-w-md mx-8">
                     <div className="h-8 border-2 border-black bg-gray-50 flex items-center px-4 text-[11px] font-black uppercase tracking-widest text-black/40">
-                      crackito.uk — Your Website
+                      yourwebsite.com — Coffee Shop Demo
                     </div>
                   </div>
                   <div className="w-12" />
                 </div>
 
-                {/* Website Content */}
-                <div className="relative bg-white">
-                  {/* Fake website */}
-                  <div className="absolute inset-0 p-12 opacity-[0.04]">
-                    <div className="flex items-center justify-between mb-12">
-                      <div className="h-8 w-28 bg-black" />
-                      <div className="flex gap-6">
-                        <div className="h-3 w-16 bg-black" />
-                        <div className="h-3 w-16 bg-black" />
-                        <div className="h-3 w-16 bg-black" />
-                      </div>
-                    </div>
-                    <div className="h-24 w-2/3 bg-black mb-6" />
-                    <div className="space-y-2 mb-12">
-                      <div className="h-4 w-full bg-black" />
-                      <div className="h-4 w-full bg-black" />
-                      <div className="h-4 w-3/4 bg-black" />
-                    </div>
-                    <div className="grid grid-cols-4 gap-6">
-                      {[1,2,3,4].map(i => (
-                        <div key={i} className="h-32 bg-black" />
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* AI Widget Demo */}
-                  <div className="relative z-10 p-8 min-h-[350px] flex items-end">
-                    <LiveChatDemo lang={lang} />
-                  </div>
-                </div>
+                {/* Website Content with Chat Demo */}
+                <CoffeeChatDemo lang={lang} />
               </div>
             </motion.div>
           </div>
@@ -244,10 +359,10 @@ export default function DeviceSection({
               </h3>
               
               <div className="space-y-3">
-                <FeatureBadge icon={MessageCircle} text={lang === "en" ? "Chat Support" : "Soporte de Chat"} />
-                <FeatureBadge icon={Calendar} text={lang === "en" ? "Book Appointments" : "Reservar Citas"} />
-                <FeatureBadge icon={CreditCard} text={lang === "en" ? "Process Payments" : "Procesar Pagos"} />
-                <FeatureBadge icon={Zap} text={lang === "en" ? "24/7 Available" : "24/7 Disponible"} />
+                <FeatureBadge icon={MessageCircle} text={lang === "en" ? "Natural Chat" : "Chat Natural"} />
+                <FeatureBadge icon={Coffee} text={lang === "en" ? "Product Recs" : "Recomendaciones"} />
+                <FeatureBadge icon={Calendar} text={lang === "en" ? "Book Orders" : "Reservas"} />
+                <FeatureBadge icon={CreditCard} text={lang === "en" ? "Instant Payments" : "Pagos Instant"} />
               </div>
             </motion.div>
 
