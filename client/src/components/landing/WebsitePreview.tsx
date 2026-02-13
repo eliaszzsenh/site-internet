@@ -229,7 +229,7 @@ export function WebsitePreview() {
     try {
       const payload = { ...data, url, selectedLanguage: 'en' };
       
-      const [response] = await Promise.all([
+      const [result] = await Promise.all([
         fetch('https://widget.crackito.uk/api/demo-preview/create', {
           method: 'POST',
           headers: { 
@@ -237,16 +237,13 @@ export function WebsitePreview() {
             'X-Demo-API-Key': 'ilnaj-demo-2024-secure'
           },
           body: JSON.stringify(payload)
+        }).then(async res => {
+          if (!res.ok) throw new Error('Failed to create preview');
+          return res.json();
         }),
         // Ensure at least 4 seconds loading time
         new Promise(resolve => setTimeout(resolve, 4000))
       ]);
-
-      if (!response.ok) {
-        throw new Error('Failed to create preview');
-      }
-
-      const result = await response.json();
       
       if (result.success) {
         toast({ title: "Analysis complete", description: "Your custom preview is ready." });
