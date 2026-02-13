@@ -18,66 +18,81 @@ import { ArrowRight, Check } from "lucide-react";
 
 // Loading Animation Component
 function OrbitingSquares() {
+  const duration = 2.5;
+  const ease = [0.4, 0, 0.2, 1]; // Custom easeInOut for acceleration/deceleration
+
   return (
     <div className="flex flex-col items-center justify-center py-12">
       <div className="relative w-20 h-20">
         {/* Central Square - MUCH BIGGER */}
         <div className="absolute top-1/2 left-1/2 w-12 h-12 bg-black -translate-x-1/2 -translate-y-1/2" />
         
-        {/* Orbiting Squares - All same size, smaller, closer orbit */}
+        {/* Orbiting Squares - Positioned at corners of center square, swapping places */}
+        {/* Square 1: Top-left corner → Top-right corner */}
         <motion.div
-          className="absolute w-2.5 h-2.5 bg-black"
+          className="absolute w-3 h-3 bg-black"
+          initial={{ top: "20%", left: "20%" }}
           animate={{
-            top: ["15%", "15%", "85%", "85%", "15%"],
-            left: ["15%", "85%", "85%", "15%", "15%"],
+            top: ["20%", "20%", "20%", "20%"],
+            left: ["20%", "80%", "80%", "20%"],
           }}
           transition={{
-            duration: 3,
-            ease: "linear",
+            duration,
+            ease,
             repeat: Infinity,
-            times: [0, 0.25, 0.5, 0.75, 1]
+            times: [0, 0.5, 0.5, 1],
+            repeatDelay: 0.5
           }}
         />
+        
+        {/* Square 2: Top-right corner → Bottom-right corner */}
         <motion.div
-          className="absolute w-2.5 h-2.5 bg-black"
-          initial={{ top: "85%", left: "85%" }}
+          className="absolute w-3 h-3 bg-black"
+          initial={{ top: "20%", left: "80%" }}
           animate={{
-            top: ["85%", "85%", "15%", "15%", "85%"],
-            left: ["85%", "15%", "15%", "85%", "85%"],
+            top: ["20%", "80%", "80%", "20%"],
+            left: ["80%", "80%", "80%", "80%"],
           }}
           transition={{
-            duration: 3,
-            ease: "linear",
+            duration,
+            ease,
             repeat: Infinity,
-            times: [0, 0.25, 0.5, 0.75, 1]
+            times: [0, 0.5, 0.5, 1],
+            repeatDelay: 0.5
           }}
         />
+        
+        {/* Square 3: Bottom-right corner → Bottom-left corner */}
         <motion.div
-          className="absolute w-2.5 h-2.5 bg-black"
-          initial={{ top: "15%", left: "85%" }}
+          className="absolute w-3 h-3 bg-black"
+          initial={{ top: "80%", left: "80%" }}
           animate={{
-            top: ["15%", "85%", "85%", "15%", "15%"],
-            left: ["85%", "85%", "15%", "15%", "85%"],
+            top: ["80%", "80%", "80%", "80%"],
+            left: ["80%", "20%", "20%", "80%"],
           }}
           transition={{
-            duration: 3,
-            ease: "linear",
+            duration,
+            ease,
             repeat: Infinity,
-            times: [0, 0.25, 0.5, 0.75, 1]
+            times: [0, 0.5, 0.5, 1],
+            repeatDelay: 0.5
           }}
         />
+        
+        {/* Square 4: Bottom-left corner → Top-left corner */}
         <motion.div
-          className="absolute w-2.5 h-2.5 bg-black"
-          initial={{ top: "85%", left: "15%" }}
+          className="absolute w-3 h-3 bg-black"
+          initial={{ top: "80%", left: "20%" }}
           animate={{
-            top: ["85%", "15%", "15%", "85%", "85%"],
-            left: ["15%", "15%", "85%", "85%", "15%"],
+            top: ["80%", "20%", "20%", "80%"],
+            left: ["20%", "20%", "20%", "20%"],
           }}
           transition={{
-            duration: 3,
-            ease: "linear",
+            duration,
+            ease,
             repeat: Infinity,
-            times: [0, 0.25, 0.5, 0.75, 1]
+            times: [0, 0.5, 0.5, 1],
+            repeatDelay: 0.5
           }}
         />
       </div>
