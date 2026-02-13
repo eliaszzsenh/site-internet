@@ -16,6 +16,75 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { ArrowRight, Check } from "lucide-react";
 
+// Loading Animation Component
+function OrbitingSquares() {
+  return (
+    <div className="flex flex-col items-center justify-center py-12">
+      <div className="relative w-24 h-24">
+        {/* Central Square */}
+        <div className="absolute top-1/2 left-1/2 w-8 h-8 bg-black -translate-x-1/2 -translate-y-1/2" />
+        
+        {/* Orbiting Squares */}
+        <motion.div
+          className="absolute w-4 h-4 bg-black"
+          animate={{
+            top: [0, 0, "100%", "100%", 0],
+            left: [0, "100%", "100%", 0, 0],
+          }}
+          transition={{
+            duration: 3,
+            ease: "linear",
+            repeat: Infinity,
+            times: [0, 0.25, 0.5, 0.75, 1]
+          }}
+        />
+        <motion.div
+          className="absolute w-4 h-4 bg-black"
+          initial={{ top: "100%", left: "100%" }}
+          animate={{
+            top: ["100%", "100%", 0, 0, "100%"],
+            left: ["100%", 0, 0, "100%", "100%"],
+          }}
+          transition={{
+            duration: 3,
+            ease: "linear",
+            repeat: Infinity,
+            times: [0, 0.25, 0.5, 0.75, 1]
+          }}
+        />
+        <motion.div
+          className="absolute w-3 h-3 bg-black"
+          initial={{ top: 0, left: "100%" }}
+          animate={{
+            top: [0, "100%", "100%", 0, 0],
+            left: ["100%", "100%", 0, 0, "100%"],
+          }}
+          transition={{
+            duration: 3,
+            ease: "linear",
+            repeat: Infinity,
+            times: [0, 0.25, 0.5, 0.75, 1]
+          }}
+        />
+        <motion.div
+          className="absolute w-3 h-3 bg-black"
+          initial={{ top: "100%", left: 0 }}
+          animate={{
+            top: ["100%", 0, 0, "100%", "100%"],
+            left: [0, 0, "100%", "100%", 0],
+          }}
+          transition={{
+            duration: 3,
+            ease: "linear",
+            repeat: Infinity,
+            times: [0, 0.25, 0.5, 0.75, 1]
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
 // Schema for Step 1
 const step1Schema = z.object({
   url: z.string().url("Please enter a valid URL (e.g., https://example.com)"),
@@ -114,9 +183,12 @@ export function WebsitePreview() {
 
   if (isLoading) {
     return (
-      <div className="w-full max-w-2xl mx-auto border-2 border-black bg-white p-12 text-center">
-        <h2 className="text-[28px] font-black uppercase tracking-tighter mb-4 animate-pulse">GENERATING PREVIEW...</h2>
-        <p className="text-[16px] text-black/60 font-medium">Please wait while we prepare your demo.</p>
+      <div className="w-full max-w-2xl mx-auto border-2 border-black bg-white">
+        <OrbitingSquares />
+        <div className="text-center pb-8">
+          <h2 className="text-[28px] font-black uppercase tracking-tighter mb-4 animate-pulse">GENERATING PREVIEW...</h2>
+          <p className="text-[16px] text-black/60 font-medium">Please wait while we prepare your demo.</p>
+        </div>
       </div>
     );
   }
