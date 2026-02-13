@@ -18,38 +18,90 @@ import { ArrowRight, Check } from "lucide-react";
 
 // Loading Animation Component
 function OrbitingSquares() {
+  const duration = 2;
+  const ease: [number, number, number, number] = [0.4, 0, 0.2, 1]; // Smooth ease-in-out
+  
+  // Corner positions (percentages from top-left of container)
+  const positions = {
+    tl: { top: '12.5%', left: '12.5%' },  // Top-left
+    tr: { top: '12.5%', left: '72.5%' },  // Top-right
+    br: { top: '72.5%', left: '72.5%' },  // Bottom-right
+    bl: { top: '72.5%', left: '12.5%' }   // Bottom-left
+  };
+
   return (
     <div className="flex flex-col items-center justify-center py-12">
       <div className="relative w-20 h-20">
         {/* Central Square */}
         <div className="absolute top-1/2 left-1/2 w-12 h-12 bg-black -translate-x-1/2 -translate-y-1/2 z-10" />
         
-        {/* Rotating container for orbiting squares */}
+        {/* Square 1: Starts top-left, moves to top-right */}
         <motion.div
-          className="absolute inset-0"
-          animate={{ rotate: 360 }}
-          transition={{
-            duration: 3,
-            ease: "linear",
-            repeat: Infinity
+          className="absolute w-3 h-3 bg-black rounded-none"
+          style={{ marginTop: '-6px', marginLeft: '-6px' }}
+          initial={positions.tl}
+          animate={{
+            top: [positions.tl.top, positions.tr.top, positions.tr.top, positions.br.top, positions.br.top, positions.bl.top, positions.bl.top, positions.tl.top],
+            left: [positions.tl.left, positions.tr.left, positions.tr.left, positions.br.left, positions.br.left, positions.bl.left, positions.bl.left, positions.tl.left]
           }}
-        >
-          {/* Square 1: Top-left */}
-          <div className="absolute w-3 h-3 bg-black rounded-none"
-               style={{ top: '10%', left: '10%', marginTop: '-6px', marginLeft: '-6px' }} />
-          
-          {/* Square 2: Top-right */}
-          <div className="absolute w-3 h-3 bg-black rounded-none"
-               style={{ top: '10%', left: '90%', marginTop: '-6px', marginLeft: '-6px' }} />
-          
-          {/* Square 3: Bottom-right */}
-          <div className="absolute w-3 h-3 bg-black rounded-none"
-               style={{ top: '90%', left: '90%', marginTop: '-6px', marginLeft: '-6px' }} />
-          
-          {/* Square 4: Bottom-left */}
-          <div className="absolute w-3 h-3 bg-black rounded-none"
-               style={{ top: '90%', left: '10%', marginTop: '-6px', marginLeft: '-6px' }} />
-        </motion.div>
+          transition={{
+            duration: duration * 4,
+            ease,
+            repeat: Infinity,
+            times: [0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1]
+          }}
+        />
+        
+        {/* Square 2: Starts top-right, moves to bottom-right */}
+        <motion.div
+          className="absolute w-3 h-3 bg-black rounded-none"
+          style={{ marginTop: '-6px', marginLeft: '-6px' }}
+          initial={positions.tr}
+          animate={{
+            top: [positions.tr.top, positions.br.top, positions.br.top, positions.bl.top, positions.bl.top, positions.tl.top, positions.tl.top, positions.tr.top],
+            left: [positions.tr.left, positions.br.left, positions.br.left, positions.bl.left, positions.bl.left, positions.tl.left, positions.tl.left, positions.tr.left]
+          }}
+          transition={{
+            duration: duration * 4,
+            ease,
+            repeat: Infinity,
+            times: [0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1]
+          }}
+        />
+        
+        {/* Square 3: Starts bottom-right, moves to bottom-left */}
+        <motion.div
+          className="absolute w-3 h-3 bg-black rounded-none"
+          style={{ marginTop: '-6px', marginLeft: '-6px' }}
+          initial={positions.br}
+          animate={{
+            top: [positions.br.top, positions.bl.top, positions.bl.top, positions.tl.top, positions.tl.top, positions.tr.top, positions.tr.top, positions.br.top],
+            left: [positions.br.left, positions.bl.left, positions.bl.left, positions.tl.left, positions.tl.left, positions.tr.left, positions.tr.left, positions.br.left]
+          }}
+          transition={{
+            duration: duration * 4,
+            ease,
+            repeat: Infinity,
+            times: [0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1]
+          }}
+        />
+        
+        {/* Square 4: Starts bottom-left, moves to top-left */}
+        <motion.div
+          className="absolute w-3 h-3 bg-black rounded-none"
+          style={{ marginTop: '-6px', marginLeft: '-6px' }}
+          initial={positions.bl}
+          animate={{
+            top: [positions.bl.top, positions.tl.top, positions.tl.top, positions.tr.top, positions.tr.top, positions.br.top, positions.br.top, positions.bl.top],
+            left: [positions.bl.left, positions.tl.left, positions.tl.left, positions.tr.left, positions.tr.left, positions.br.left, positions.br.left, positions.bl.left]
+          }}
+          transition={{
+            duration: duration * 4,
+            ease,
+            repeat: Infinity,
+            times: [0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1]
+          }}
+        />
       </div>
     </div>
   );
