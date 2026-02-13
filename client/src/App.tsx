@@ -7,6 +7,8 @@ import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
 import Eliasz from "@/pages/eliasz";
 import DemoPreview from "@/pages/demo-preview";
+import TermsOfService from "@/pages/legal/terms";
+import PrivacyPolicy from "@/pages/legal/privacy";
 
 function Router() {
   return (
@@ -14,6 +16,8 @@ function Router() {
       <Route path="/" component={Landing} />
       <Route path="/eliasz" component={Eliasz} />
       <Route path="/demo-preview/:id" component={DemoPreview} />
+      <Route path="/terms" component={TermsOfService} />
+      <Route path="/privacy" component={PrivacyPolicy} />
       <Route component={NotFound} />
     </Switch>
   );

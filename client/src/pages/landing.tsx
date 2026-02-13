@@ -327,8 +327,16 @@ export default function Landing() {
           </div>
 
           <div className="mt-16 flex flex-col gap-4 border-t border-black pt-8 text-[11px] font-bold uppercase tracking-[0.2em] text-black/40 md:flex-row md:items-center md:justify-between">
-            <div>
-              © {new Date().getFullYear()} ILNAJ. All rights reserved.
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-8">
+              <div>
+                © {new Date().getFullYear()} ILNAJ. All rights reserved.
+              </div>
+              <Link href="/terms">
+                <a className="hover:text-black transition-colors">Terms of Service</a>
+              </Link>
+              <Link href="/privacy">
+                <a className="hover:text-black transition-colors">Privacy Policy</a>
+              </Link>
             </div>
             <div>
               Prototype UI — No backend connected
