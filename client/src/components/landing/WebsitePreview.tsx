@@ -641,7 +641,7 @@ export function WebsitePreview() {
             </form>
           )}
         </motion.div>
-      </div>
+      </motion.div>
     </div>
   );
 }
