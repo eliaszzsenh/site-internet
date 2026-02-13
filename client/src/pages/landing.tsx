@@ -8,6 +8,9 @@ import { FeatureCard } from "@/components/landing/FeatureCard";
 import { MicroConversation } from "@/components/landing/MicroConversation";
 import { WebsitePreview } from "@/components/landing/WebsitePreview";
 import { ContactForm } from "@/components/landing/ContactForm";
+import { BrowserFrame } from "@/components/landing/BrowserFrame";
+import { IntegrationGrid } from "@/components/landing/IntegrationGrid";
+import { MarqueeTicker } from "@/components/landing/MarqueeTicker";
 import { translations, Lang } from "@/lib/i18n";
 
 export default function Landing() {
@@ -90,7 +93,9 @@ export default function Landing() {
         </div>
       </header>
 
-      <section id="hero" className="relative ilnaj-shadow-gradient-hero overflow-hidden">
+      <MarqueeTicker />
+
+      <section id="hero" className="relative ilnaj-shadow-gradient-hero overflow-hidden ilnaj-noise">
         <FloatingShapes />
         <div className="mx-auto max-w-[1200px] px-6 pb-24 pt-28 md:pb-28 md:pt-40">
           <div className="grid items-center gap-14 md:grid-cols-12">
@@ -202,7 +207,12 @@ export default function Landing() {
             ))}
           </div>
 
-          <div className="mx-auto mt-14 max-w-[820px]">
+          <IntegrationGrid />
+
+          <div className="mx-auto mt-24 max-w-[820px]">
+            <div className="text-[11px] font-black uppercase tracking-[0.2em] text-black/40 mb-4 ml-2">
+              Developer Installation
+            </div>
             <div className="rounded-none bg-black p-8 shadow-2xl">
               <pre className="overflow-auto text-[14px] font-mono leading-relaxed text-white">
 {`<script src=\"https://ilnaj.ai/widget.js\"></script>
@@ -213,9 +223,15 @@ export default function Landing() {
         </div>
       </section>
 
-      <section id="device" className="relative bg-white border-y border-black">
-        <div className="mx-auto max-w-[1200px] px-6 py-24 md:py-28">
-          <div className="grid items-center gap-12 md:grid-cols-12">
+      <section id="device" className="relative bg-white border-y border-black ilnaj-noise overflow-hidden">
+        <div className="absolute left-6 top-1/2 -translate-y-1/2 -rotate-90 origin-left hidden xl:block">
+            <div className="text-[10px] font-black uppercase tracking-[0.4em] text-black/20">
+                AUTOMATION ENGINE v1.0.4 ■ EST. 2024 ■ ALL RIGHTS RESERVED
+            </div>
+        </div>
+
+        <div className="mx-auto max-w-[1200px] px-6 py-24 md:py-32">
+          <div className="grid items-center gap-20 md:grid-cols-12">
             <div className="md:col-span-6 md:col-start-2">
               <div className="text-[13px] font-black tracking-[0.25em] text-black/40 uppercase">
                 {t.device.kicker}
@@ -223,19 +239,19 @@ export default function Landing() {
               <h2 className="mt-6 text-[34px] font-black leading-tight tracking-tighter md:text-[56px] uppercase">
                 {t.device.title}
               </h2>
-              <p className="mt-6 text-[18px] font-medium text-black/60">
-                {t.device.subtitle}
+              <p className="mt-6 text-[18px] font-medium text-black/60 max-w-lg">
+                Your AI assistant adapts instantly to the environment. Whether it's a mobile viewport or a high-resolution desktop screen, the performance remains sharp and the logic consistent.
               </p>
               <div className="mt-10 flex flex-wrap gap-4">
                 <Button
-                  className="h-12 rounded-none bg-black px-8 font-black uppercase tracking-widest text-white"
+                  className="h-14 rounded-none bg-black px-10 font-black uppercase tracking-widest text-white hover:bg-black/90 transition-all"
                   onClick={() => scrollTo("cta")}
                 >
                   {t.device.cta}
                 </Button>
                 <Button
                   variant="outline"
-                  className="h-12 rounded-none border-2 border-black font-black uppercase tracking-widest text-black"
+                  className="h-14 rounded-none border-2 border-black font-black uppercase tracking-widest text-black hover:bg-black/10 transition-all"
                   onClick={() => scrollTo("steps")}
                 >
                   {t.device.steps}
@@ -243,15 +259,19 @@ export default function Landing() {
               </div>
             </div>
 
-            <div className="md:col-span-4 md:col-start-9">
-              <MicroConversation lang={lang} />
+            <div className="md:col-span-5 md:col-start-8">
+              <BrowserFrame>
+                <div className="scale-75 origin-top-left p-12 h-[150%] w-[150%]">
+                   <MicroConversation lang={lang} />
+                </div>
+              </BrowserFrame>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="steps" className="relative bg-white">
-        <div className="mx-auto max-w-[1200px] px-6 py-24 md:py-28">
+      <section id="steps" className="relative bg-white ilnaj-noise">
+        <div className="mx-auto max-w-[1200px] px-6 py-24 md:py-32">
           <div className="mx-auto max-w-[820px] text-center">
             <div className="text-[13px] font-black tracking-[0.25em] text-black/40 uppercase">
               {t.steps.kicker}
@@ -308,7 +328,9 @@ export default function Landing() {
         </div>
       </section>
 
-      <footer className="border-t border-black bg-white">
+      <MarqueeTicker />
+
+      <footer className="border-t border-black bg-white ilnaj-noise">
         <div className="mx-auto max-w-[1200px] px-6 py-16">
           <div className="flex flex-col items-start justify-between gap-10 md:flex-row md:items-center">
             <div>
