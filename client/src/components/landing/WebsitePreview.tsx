@@ -408,16 +408,21 @@ export function WebsitePreview() {
         </p>
       </div>
 
-      <div 
+      <motion.div 
         ref={formBoxRef}
-        className="border-2 border-black p-8 bg-white transition-all relative overflow-hidden"
+        layout
+        transition={{ 
+          duration: 0.8, 
+          ease: [0.22, 1, 0.36, 1] // Custom "velocity" ease (expo out)
+        }}
+        className="border-2 border-black p-8 bg-white relative overflow-hidden"
       >
         {/* Transition Overlay */}
         <AnimatePresence>
           {animPhase !== "idle" && (
             <motion.div
               key="overlay"
-              className="absolute z-50 bg-black overflow-hidden"
+              className="absolute z-50 bg-black"
               initial={animPhase === "expanding" ? {
                 top: buttonRect.top,
                 left: buttonRect.left,
@@ -430,8 +435,10 @@ export function WebsitePreview() {
                 width: "100%",
                 height: "100%",
               }}
-              transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-              layout
+              transition={{ 
+                duration: animPhase === "expanding" ? 0.4 : 0.6, 
+                ease: [0.22, 1, 0.36, 1] 
+              }}
             >
               {animPhase === "splitting" && (
                 <div className="absolute inset-0 flex">
@@ -439,13 +446,13 @@ export function WebsitePreview() {
                     className="w-1/2 h-full bg-black border-r border-white/5" 
                     initial={{ x: 0 }}
                     animate={{ x: "-100%" }}
-                    transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+                    transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
                   />
                   <motion.div 
                     className="w-1/2 h-full bg-black border-l border-white/5" 
                     initial={{ x: 0 }}
                     animate={{ x: "100%" }}
-                    transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+                    transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
                   />
                 </div>
               )}
@@ -454,8 +461,6 @@ export function WebsitePreview() {
         </AnimatePresence>
 
         <motion.div 
-          layout 
-          transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
           className={animPhase === "expanding" || animPhase === "morphing" ? "invisible" : ""}
         >
           {step === 1 ? (
