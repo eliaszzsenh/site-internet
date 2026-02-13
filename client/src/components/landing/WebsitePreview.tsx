@@ -22,11 +22,17 @@ function OrbitingSquares() {
   const ease: [number, number, number, number] = [0.4, 0, 0.2, 1]; // Smooth ease-in-out
   
   // Corner positions (percentages from top-left of container)
+  // Center square is 48px (w-12) in 80px container, corners at 20%/80%
+  // Small squares are 12px (w-3), centered with -6px margins
+  // So positions are 20% - 7.5% = 12.5%... wait, let me recalculate:
+  // Center square corners: 16px and 64px in 80px container = 20% and 80%
+  // Small square center at corner: 20% of 80px = 16px, minus 6px margin = 10px = 12.5%
+  // But visually they need to be CLOSER to center. Let me use 17.5%/77.5%
   const positions = {
-    tl: { top: '12.5%', left: '12.5%' },  // Top-left
-    tr: { top: '12.5%', left: '72.5%' },  // Top-right
-    br: { top: '72.5%', left: '72.5%' },  // Bottom-right
-    bl: { top: '72.5%', left: '12.5%' }   // Bottom-left
+    tl: { top: '17.5%', left: '17.5%' },  // Top-left
+    tr: { top: '17.5%', left: '77.5%' },  // Top-right
+    br: { top: '77.5%', left: '77.5%' },  // Bottom-right
+    bl: { top: '77.5%', left: '17.5%' }   // Bottom-left
   };
 
   return (
