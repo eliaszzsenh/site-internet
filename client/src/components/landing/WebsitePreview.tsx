@@ -85,7 +85,7 @@ export function WebsitePreview() {
   const onStep2Submit = async (data: Step2Data) => {
     setIsLoading(true);
     // Artificial delay to show "Generating..." state
-    await new Promise(resolve => setTimeout(resolve, 2500));
+    await new Promise(resolve => setTimeout(resolve, 4000));
     
     try {
       const payload = { ...data, url, selectedLanguage: 'en' };
