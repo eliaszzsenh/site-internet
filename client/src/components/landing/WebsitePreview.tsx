@@ -224,7 +224,7 @@ export function WebsitePreview() {
     }, 100);
 
     // Artificial delay to show "Generating..." state
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise(resolve => setTimeout(resolve, 4000));
     
     try {
       const payload = { ...data, url, selectedLanguage: 'en' };
