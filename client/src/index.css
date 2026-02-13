@@ -164,27 +164,37 @@
     @apply font-sans antialiased bg-background text-foreground;
   }
 
-  /* Custom Scrollbar - Black Rectangle */
+  /* Custom Scrollbar - Small Thick Black Rectangle */
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
+    height: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    background: #f0f0f0;
+    background: transparent;
   }
 
   ::-webkit-scrollbar-thumb {
     background: #000000;
+    border-radius: 0;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #333333;
+    background: #000000;
+  }
+
+  ::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  ::-webkit-scrollbar-corner {
+    display: none;
   }
 
   /* Firefox */
   * {
     scrollbar-width: thin;
-    scrollbar-color: #000000 #f0f0f0;
+    scrollbar-color: #000000 transparent;
   }
 }
 
