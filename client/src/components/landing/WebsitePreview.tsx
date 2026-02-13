@@ -17,95 +17,123 @@ import { useToast } from "@/hooks/use-toast";
 import { ArrowRight, Check } from "lucide-react";
 
 // Loading Animation Component
-function OrbitingSquares() {
+function OrbitingSquares({ isExiting = false }: { isExiting?: boolean }) {
   const duration = 2;
   const ease: [number, number, number, number] = [0.4, 0, 0.2, 1]; // Smooth ease-in-out
   
-  // Corner positions (percentages from top-left of container)
-  // Center square is 48px (w-12) in 80px container, corners at 20%/80%
-  // Small squares are 12px (w-3), centered with -6px margins
-  // So positions are 20% - 7.5% = 12.5%... wait, let me recalculate:
-  // Center square corners: 16px and 64px in 80px container = 20% and 80%
-  // Small square center at corner: 20% of 80px = 16px, minus 6px margin = 10px = 12.5%
-  // But visually they need to be CLOSER to center. Let me use 17.5%/77.5%
+  // Bigger squares (w-5 = 20px) positioned further out (7.5%/87.5%)
   const positions = {
-    tl: { top: '17.5%', left: '17.5%' },  // Top-left
-    tr: { top: '17.5%', left: '77.5%' },  // Top-right
-    br: { top: '77.5%', left: '77.5%' },  // Bottom-right
-    bl: { top: '77.5%', left: '17.5%' }   // Bottom-left
+    tl: { top: '7.5%', left: '7.5%' },   // Top-left
+    tr: { top: '7.5%', left: '87.5%' },   // Top-right
+    br: { top: '87.5%', left: '87.5%' },  // Bottom-right
+    bl: { top: '87.5%', left: '7.5%' }    // Bottom-left
   };
+
+  const centerPosition = { top: '50%', left: '50%' };
 
   return (
     <div className="flex flex-col items-center justify-center py-12">
-      <div className="relative w-20 h-20">
-        {/* Central Square */}
-        <div className="absolute top-1/2 left-1/2 w-12 h-12 bg-black -translate-x-1/2 -translate-y-1/2 z-10" />
+      <div className="relative w-24 h-24">
+        {/* Central Square - Only show when not exiting */}
+        <motion.div 
+          className="absolute top-1/2 left-1/2 w-12 h-12 bg-black -translate-x-1/2 -translate-y-1/2 z-10"
+          animate={isExiting ? { scale: 0.8, opacity: 0 } : { scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5, ease }}
+        />
         
         {/* Square 1: Starts top-left, moves to top-right */}
         <motion.div
-          className="absolute w-3 h-3 bg-black rounded-none"
-          style={{ marginTop: '-6px', marginLeft: '-6px' }}
+          className="absolute w-5 h-5 bg-black rounded-none z-20"
+          style={{ marginTop: '-10px', marginLeft: '-10px' }}
           initial={positions.tl}
-          animate={{
+          animate={isExiting ? {
+            top: centerPosition.top,
+            left: centerPosition.left,
+            scale: 0.5,
+            opacity: 0
+          } : {
             top: [positions.tl.top, positions.tr.top, positions.tr.top, positions.br.top, positions.br.top, positions.bl.top, positions.bl.top, positions.tl.top],
-            left: [positions.tl.left, positions.tr.left, positions.tr.left, positions.br.left, positions.br.left, positions.bl.left, positions.bl.left, positions.tl.left]
+            left: [positions.tl.left, positions.tr.left, positions.tr.left, positions.br.left, positions.br.left, positions.bl.left, positions.bl.left, positions.tl.left],
+            scale: 1,
+            opacity: 1
           }}
           transition={{
-            duration: duration * 4,
+            duration: isExiting ? 0.6 : duration * 4,
             ease,
-            repeat: Infinity,
-            times: [0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1]
+            repeat: isExiting ? 0 : Infinity,
+            times: isExiting ? undefined : [0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1]
           }}
         />
         
         {/* Square 2: Starts top-right, moves to bottom-right */}
         <motion.div
-          className="absolute w-3 h-3 bg-black rounded-none"
-          style={{ marginTop: '-6px', marginLeft: '-6px' }}
+          className="absolute w-5 h-5 bg-black rounded-none z-20"
+          style={{ marginTop: '-10px', marginLeft: '-10px' }}
           initial={positions.tr}
-          animate={{
+          animate={isExiting ? {
+            top: centerPosition.top,
+            left: centerPosition.left,
+            scale: 0.5,
+            opacity: 0
+          } : {
             top: [positions.tr.top, positions.br.top, positions.br.top, positions.bl.top, positions.bl.top, positions.tl.top, positions.tl.top, positions.tr.top],
-            left: [positions.tr.left, positions.br.left, positions.br.left, positions.bl.left, positions.bl.left, positions.tl.left, positions.tl.left, positions.tr.left]
+            left: [positions.tr.left, positions.br.left, positions.br.left, positions.bl.left, positions.bl.left, positions.tl.left, positions.tl.left, positions.tr.left],
+            scale: 1,
+            opacity: 1
           }}
           transition={{
-            duration: duration * 4,
+            duration: isExiting ? 0.6 : duration * 4,
             ease,
-            repeat: Infinity,
-            times: [0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1]
+            repeat: isExiting ? 0 : Infinity,
+            times: isExiting ? undefined : [0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1]
           }}
         />
         
         {/* Square 3: Starts bottom-right, moves to bottom-left */}
         <motion.div
-          className="absolute w-3 h-3 bg-black rounded-none"
-          style={{ marginTop: '-6px', marginLeft: '-6px' }}
+          className="absolute w-5 h-5 bg-black rounded-none z-20"
+          style={{ marginTop: '-10px', marginLeft: '-10px' }}
           initial={positions.br}
-          animate={{
+          animate={isExiting ? {
+            top: centerPosition.top,
+            left: centerPosition.left,
+            scale: 0.5,
+            opacity: 0
+          } : {
             top: [positions.br.top, positions.bl.top, positions.bl.top, positions.tl.top, positions.tl.top, positions.tr.top, positions.tr.top, positions.br.top],
-            left: [positions.br.left, positions.bl.left, positions.bl.left, positions.tl.left, positions.tl.left, positions.tr.left, positions.tr.left, positions.br.left]
+            left: [positions.br.left, positions.bl.left, positions.bl.left, positions.tl.left, positions.tl.left, positions.tr.left, positions.tr.left, positions.br.left],
+            scale: 1,
+            opacity: 1
           }}
           transition={{
-            duration: duration * 4,
+            duration: isExiting ? 0.6 : duration * 4,
             ease,
-            repeat: Infinity,
-            times: [0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1]
+            repeat: isExiting ? 0 : Infinity,
+            times: isExiting ? undefined : [0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1]
           }}
         />
         
         {/* Square 4: Starts bottom-left, moves to top-left */}
         <motion.div
-          className="absolute w-3 h-3 bg-black rounded-none"
-          style={{ marginTop: '-6px', marginLeft: '-6px' }}
+          className="absolute w-5 h-5 bg-black rounded-none z-20"
+          style={{ marginTop: '-10px', marginLeft: '-10px' }}
           initial={positions.bl}
-          animate={{
+          animate={isExiting ? {
+            top: centerPosition.top,
+            left: centerPosition.left,
+            scale: 0.5,
+            opacity: 0
+          } : {
             top: [positions.bl.top, positions.tl.top, positions.tl.top, positions.tr.top, positions.tr.top, positions.br.top, positions.br.top, positions.bl.top],
-            left: [positions.bl.left, positions.tl.left, positions.tl.left, positions.tr.left, positions.tr.left, positions.br.left, positions.br.left, positions.bl.left]
+            left: [positions.bl.left, positions.tl.left, positions.tl.left, positions.tr.left, positions.tr.left, positions.br.left, positions.br.left, positions.bl.left],
+            scale: 1,
+            opacity: 1
           }}
           transition={{
-            duration: duration * 4,
+            duration: isExiting ? 0.6 : duration * 4,
             ease,
-            repeat: Infinity,
-            times: [0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1]
+            repeat: isExiting ? 0 : Infinity,
+            times: isExiting ? undefined : [0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1]
           }}
         />
       </div>
@@ -209,52 +237,106 @@ export function WebsitePreview() {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || previewUrl) {
     return (
       <div className="w-full max-w-2xl mx-auto border-2 border-black bg-white">
-        <OrbitingSquares />
-        <div className="text-center pb-8">
-          <h2 className="text-[28px] font-black uppercase tracking-tighter mb-4 animate-pulse">GENERATING PREVIEW...</h2>
-          <p className="text-[16px] text-black/60 font-medium">Please wait while we prepare your demo.</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (previewUrl) {
-    return (
-      <div className="w-full max-w-xl mx-auto flex flex-col items-center justify-center p-8 border-2 border-black bg-white gap-6">
-        <div className="h-16 w-16 bg-black flex items-center justify-center">
-          <Check className="h-8 w-8 text-white" strokeWidth={4} />
-        </div>
-        
-        <div className="text-[24px] font-bold text-black uppercase tracking-tight">
-          Your Preview is Ready!
-        </div>
-        <p className="text-center text-[15px] text-black/60">
-          We've analyzed your website and created a personalized AI assistant.
-        </p>
-        <Button
-          onClick={() => window.open(previewUrl, '_blank')}
-          className="h-16 rounded-none bg-black px-10 text-[18px] font-black uppercase tracking-widest text-white hover:bg-black/90 transition-all w-full"
-        >
-          View Preview <ArrowRight className="ml-2 h-5 w-5" />
-        </Button>
-        <div className="text-[13px] text-black/40 font-medium">
-          Preview expires in 10 minutes
-        </div>
-        <Button
-          variant="ghost"
-          onClick={() => {
-            setPreviewUrl(null);
-            setStep(1);
-            form1.reset();
-            form2.reset();
-          }}
-          className="text-[11px] font-bold uppercase tracking-widest text-black/40 hover:text-black mt-2"
-        >
-          Create another preview
-        </Button>
+        <AnimatePresence mode="wait">
+          {isLoading ? (
+            <motion.div
+              key="loading"
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <OrbitingSquares isExiting={false} />
+              <div className="text-center pb-8">
+                <h2 className="text-[28px] font-black uppercase tracking-tighter mb-4 animate-pulse">GENERATING PREVIEW...</h2>
+                <p className="text-[16px] text-black/60 font-medium">Please wait while we prepare your demo.</p>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="success"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+              className="flex flex-col items-center justify-center p-8 gap-6"
+            >
+              {/* Transition animation - squares collapse into center */}
+              <div className="relative w-24 h-24 mb-4">
+                <OrbitingSquares isExiting={true} />
+                <motion.div 
+                  className="absolute top-1/2 left-1/2 h-16 w-16 bg-black flex items-center justify-center -translate-x-1/2 -translate-y-1/2 z-30"
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                >
+                  <Check className="h-8 w-8 text-white" strokeWidth={4} />
+                </motion.div>
+              </div>
+              
+              <motion.div 
+                className="text-[24px] font-bold text-black uppercase tracking-tight"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+              >
+                Your Preview is Ready!
+              </motion.div>
+              
+              <motion.p 
+                className="text-center text-[15px] text-black/60"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+              >
+                We've analyzed your website and created a personalized AI assistant.
+              </motion.p>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.7 }}
+                className="w-full"
+              >
+                <Button
+                  onClick={() => previewUrl && window.open(previewUrl, '_blank')}
+                  className="h-16 rounded-none bg-black px-10 text-[18px] font-black uppercase tracking-widest text-white hover:bg-black/90 transition-all w-full"
+                >
+                  View Preview <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </motion.div>
+              
+              <motion.div 
+                className="text-[13px] text-black/40 font-medium"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.8 }}
+              >
+                Preview expires in 10 minutes
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.9 }}
+              >
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    setPreviewUrl(null);
+                    setStep(1);
+                    form1.reset();
+                    form2.reset();
+                  }}
+                  className="text-[11px] font-bold uppercase tracking-widest text-black/40 hover:text-black mt-2"
+                >
+                  Create another preview
+                </Button>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     );
   }
