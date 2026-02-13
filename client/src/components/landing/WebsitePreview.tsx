@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -21,12 +21,12 @@ function OrbitingSquares({ isSuccess = false }: { isSuccess?: boolean }) {
   const duration = 2;
   const ease: [number, number, number, number] = [0.4, 0, 0.2, 1]; // Smooth ease-in-out
   
-  // Orbiting squares positions (further out)
+  // Orbiting squares positions (closer to center)
   const positions = {
-    tl: { top: '0%', left: '0%' },    // Top-left (outside)
-    tr: { top: '0%', left: '100%' },   // Top-right (outside)
-    br: { top: '100%', left: '100%' }, // Bottom-right (outside)
-    bl: { top: '100%', left: '0%' }    // Bottom-left (outside)
+    tl: { top: '12.5%', left: '12.5%' },    // Top-left
+    tr: { top: '12.5%', left: '87.5%' },   // Top-right
+    br: { top: '87.5%', left: '87.5%' }, // Bottom-right
+    bl: { top: '87.5%', left: '12.5%' }    // Bottom-left
   };
 
   const centerPosition = { top: '50%', left: '50%' };
@@ -174,6 +174,7 @@ export function WebsitePreview() {
   const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   
   // Form 1: URL Only
   const form1 = useForm<Step1Data>({
@@ -215,6 +216,11 @@ export function WebsitePreview() {
 
   const onStep2Submit = async (data: Step2Data) => {
     setIsLoading(true);
+    // Scroll to view the loading animation
+    setTimeout(() => {
+      containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+
     // Artificial delay to show "Generating..." state
     await new Promise(resolve => setTimeout(resolve, 1500));
     
@@ -247,7 +253,10 @@ export function WebsitePreview() {
     const isSuccess = !!previewUrl;
 
     return (
-      <div className="w-full max-w-2xl mx-auto border-2 border-black bg-white transition-all duration-500">
+      <div 
+        ref={containerRef}
+        className="w-full max-w-2xl mx-auto border-2 border-black bg-white transition-all duration-500"
+      >
         <div className="flex flex-col items-center justify-center p-8 min-h-[400px]">
           {/* The Persistent Square - Animation logic handled inside component */}
           <OrbitingSquares isSuccess={isSuccess} />
@@ -341,7 +350,10 @@ export function WebsitePreview() {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div 
+      ref={containerRef}
+      className="w-full max-w-2xl mx-auto"
+    >
       <div className="mb-8 text-center">
         <h2 className="text-[28px] font-black uppercase tracking-tighter mb-2">See AI on Your Website</h2>
         <p className="text-[16px] text-black/60 font-medium">
