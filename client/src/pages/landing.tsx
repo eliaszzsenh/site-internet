@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "wouter";
 import { motion, useReducedMotion } from "framer-motion";
 import { CreditCard, Calendar, MessageCircle, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -62,6 +63,11 @@ export default function Landing() {
             >
               {t.nav.steps}
             </button>
+            <Link href="/eliasz">
+              <a className="text-[13px] font-bold uppercase tracking-wider transition-colors hover:underline">
+                ELIASZ
+              </a>
+            </Link>
           </nav>
 
           <div className="flex items-center gap-4">
