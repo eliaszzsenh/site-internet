@@ -20,16 +20,16 @@ import { ArrowRight, Check } from "lucide-react";
 function OrbitingSquares() {
   return (
     <div className="flex flex-col items-center justify-center py-12">
-      <div className="relative w-24 h-24">
-        {/* Central Square */}
-        <div className="absolute top-1/2 left-1/2 w-8 h-8 bg-black -translate-x-1/2 -translate-y-1/2" />
+      <div className="relative w-20 h-20">
+        {/* Central Square - MUCH BIGGER */}
+        <div className="absolute top-1/2 left-1/2 w-12 h-12 bg-black -translate-x-1/2 -translate-y-1/2" />
         
-        {/* Orbiting Squares */}
+        {/* Orbiting Squares - All same size, smaller, closer orbit */}
         <motion.div
-          className="absolute w-4 h-4 bg-black"
+          className="absolute w-2.5 h-2.5 bg-black"
           animate={{
-            top: [0, 0, "100%", "100%", 0],
-            left: [0, "100%", "100%", 0, 0],
+            top: ["15%", "15%", "85%", "85%", "15%"],
+            left: ["15%", "85%", "85%", "15%", "15%"],
           }}
           transition={{
             duration: 3,
@@ -39,11 +39,11 @@ function OrbitingSquares() {
           }}
         />
         <motion.div
-          className="absolute w-4 h-4 bg-black"
-          initial={{ top: "100%", left: "100%" }}
+          className="absolute w-2.5 h-2.5 bg-black"
+          initial={{ top: "85%", left: "85%" }}
           animate={{
-            top: ["100%", "100%", 0, 0, "100%"],
-            left: ["100%", 0, 0, "100%", "100%"],
+            top: ["85%", "85%", "15%", "15%", "85%"],
+            left: ["85%", "15%", "15%", "85%", "85%"],
           }}
           transition={{
             duration: 3,
@@ -53,11 +53,11 @@ function OrbitingSquares() {
           }}
         />
         <motion.div
-          className="absolute w-3 h-3 bg-black"
-          initial={{ top: 0, left: "100%" }}
+          className="absolute w-2.5 h-2.5 bg-black"
+          initial={{ top: "15%", left: "85%" }}
           animate={{
-            top: [0, "100%", "100%", 0, 0],
-            left: ["100%", "100%", 0, 0, "100%"],
+            top: ["15%", "85%", "85%", "15%", "15%"],
+            left: ["85%", "85%", "15%", "15%", "85%"],
           }}
           transition={{
             duration: 3,
@@ -67,11 +67,11 @@ function OrbitingSquares() {
           }}
         />
         <motion.div
-          className="absolute w-3 h-3 bg-black"
-          initial={{ top: "100%", left: 0 }}
+          className="absolute w-2.5 h-2.5 bg-black"
+          initial={{ top: "85%", left: "15%" }}
           animate={{
-            top: ["100%", 0, 0, "100%", "100%"],
-            left: [0, 0, "100%", "100%", 0],
+            top: ["85%", "15%", "15%", "85%", "85%"],
+            left: ["15%", "15%", "85%", "85%", "15%"],
           }}
           transition={{
             duration: 3,
