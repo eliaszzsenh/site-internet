@@ -58,8 +58,8 @@ function OrbitingSquares({ isSuccess = false }: { isSuccess?: boolean }) {
       
       {/* Square 1 */}
       <motion.div
-        className="absolute w-3 h-3 bg-black rounded-none z-10"
-        style={{ marginTop: '-6px', marginLeft: '-6px' }}
+        className="absolute w-6 h-6 bg-black rounded-none z-10"
+        style={{ marginTop: '-12px', marginLeft: '-12px' }}
         initial={positions.tl}
         animate={isSuccess ? {
           top: centerPosition.top,
@@ -80,8 +80,8 @@ function OrbitingSquares({ isSuccess = false }: { isSuccess?: boolean }) {
       
       {/* Square 2 */}
       <motion.div
-        className="absolute w-3 h-3 bg-black rounded-none z-10"
-        style={{ marginTop: '-6px', marginLeft: '-6px' }}
+        className="absolute w-6 h-6 bg-black rounded-none z-10"
+        style={{ marginTop: '-12px', marginLeft: '-12px' }}
         initial={positions.tr}
         animate={isSuccess ? {
           top: centerPosition.top,
@@ -102,8 +102,8 @@ function OrbitingSquares({ isSuccess = false }: { isSuccess?: boolean }) {
       
       {/* Square 3 */}
       <motion.div
-        className="absolute w-3 h-3 bg-black rounded-none z-10"
-        style={{ marginTop: '-6px', marginLeft: '-6px' }}
+        className="absolute w-6 h-6 bg-black rounded-none z-10"
+        style={{ marginTop: '-12px', marginLeft: '-12px' }}
         initial={positions.br}
         animate={isSuccess ? {
           top: centerPosition.top,
@@ -124,8 +124,8 @@ function OrbitingSquares({ isSuccess = false }: { isSuccess?: boolean }) {
       
       {/* Square 4 */}
       <motion.div
-        className="absolute w-3 h-3 bg-black rounded-none z-10"
-        style={{ marginTop: '-6px', marginLeft: '-6px' }}
+        className="absolute w-6 h-6 bg-black rounded-none z-10"
+        style={{ marginTop: '-12px', marginLeft: '-12px' }}
         initial={positions.bl}
         animate={isSuccess ? {
           top: centerPosition.top,
