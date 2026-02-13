@@ -93,8 +93,6 @@ export default function Landing() {
         </div>
       </header>
 
-      <MarqueeTicker />
-
       <section id="hero" className="relative ilnaj-shadow-gradient-hero overflow-hidden ilnaj-noise">
         <FloatingShapes />
         <div className="mx-auto max-w-[1200px] px-6 pb-24 pt-28 md:pb-28 md:pt-40">
@@ -259,9 +257,9 @@ export default function Landing() {
               </div>
             </div>
 
-            <div className="md:col-span-5 md:col-start-8">
+            <div className="md:col-span-6 md:col-start-7">
               <BrowserFrame>
-                <div className="scale-75 origin-top-left p-12 h-[150%] w-[150%]">
+                <div className="scale-[0.8] origin-bottom-right">
                    <MicroConversation lang={lang} />
                 </div>
               </BrowserFrame>
