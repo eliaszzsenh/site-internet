@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,7 +14,70 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
+
+function OrbitingSquares({ isSuccess = false }: { isSuccess?: boolean }) {
+  const duration = 2;
+  const ease: [number, number, number, number] = [0.4, 0, 0.2, 1];
+  
+  const positions = {
+    tl: { top: '12.5%', left: '12.5%' },
+    tr: { top: '12.5%', left: '87.5%' },
+    br: { top: '87.5%', left: '87.5%' },
+    bl: { top: '87.5%', left: '12.5%' }
+  };
+
+  const centerPosition = { top: '50%', left: '50%' };
+
+  return (
+    <div className="relative w-32 h-32 flex items-center justify-center mb-6">
+      <motion.div 
+        className="relative w-16 h-16 bg-black z-20 flex items-center justify-center"
+        animate={{ scale: 1, rotate: isSuccess ? 0 : 0 }}
+        transition={{ duration: 0.5, ease }}
+      >
+        <AnimatePresence>
+          {isSuccess && (
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+              transition={{ duration: 0.4, ease: "backOut", delay: 0.1 }}
+            >
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 6L9 17L4 12" stroke="white" strokeWidth="4" strokeLinecap="square" strokeLinejoin="miter" />
+              </svg>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+      
+      {[positions.tl, positions.tr, positions.br, positions.bl].map((pos, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-6 h-6 bg-black rounded-none z-10"
+          style={{ marginTop: '-12px', marginLeft: '-12px' }}
+          initial={pos}
+          animate={isSuccess ? {
+            top: centerPosition.top,
+            left: centerPosition.left,
+            opacity: 0
+          } : {
+            top: [pos.top, Object.values(positions)[(i + 1) % 4].top, Object.values(positions)[(i + 1) % 4].top, Object.values(positions)[(i + 2) % 4].top, Object.values(positions)[(i + 2) % 4].top, Object.values(positions)[(i + 3) % 4].top, Object.values(positions)[(i + 3) % 4].top, pos.top],
+            left: [pos.left, Object.values(positions)[(i + 1) % 4].left, Object.values(positions)[(i + 1) % 4].left, Object.values(positions)[(i + 2) % 4].left, Object.values(positions)[(i + 2) % 4].left, Object.values(positions)[(i + 3) % 4].left, Object.values(positions)[(i + 3) % 4].left, pos.left],
+            opacity: 1
+          }}
+          transition={{
+            duration: isSuccess ? 0.5 : duration * 4,
+            ease,
+            repeat: isSuccess ? 0 : Infinity,
+            times: isSuccess ? undefined : [0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1]
+          }}
+        />
+      ))}
+    </div>
+  );
+}
 
 const step1Schema = z.object({
   url: z.string().min(1, "URL is required").refine((val) => {
@@ -88,6 +152,9 @@ export function WebsitePreview() {
   
   const onStep2Submit = async (data: Step2Data) => {
     setIsLoading(true);
+    setTimeout(() => {
+      containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
     
     try {
       const payload = { ...data, url, selectedLanguage: 'en' };
@@ -120,50 +187,100 @@ export function WebsitePreview() {
     }
   };
 
+  const isSuccess = !!previewUrl;
+
   if (isLoading || previewUrl) {
     return (
       <div 
         ref={containerRef}
-        className="w-full max-w-2xl mx-auto border-2 border-black bg-white p-8"
+        className="w-full max-w-2xl mx-auto border-2 border-black bg-white"
       >
-        <div className="flex flex-col items-center justify-center min-h-[300px]">
-          {!previewUrl ? (
-            <div className="text-center">
-              <div className="w-16 h-16 border-4 border-black border-t-transparent animate-spin mx-auto mb-6"></div>
-              <h2 className="text-[24px] font-black uppercase tracking-tighter mb-4">GENERATING PREVIEW...</h2>
-              <p className="text-[16px] text-black/60 font-medium">Please wait while we prepare your demo.</p>
-            </div>
-          ) : (
-            <div className="w-full flex flex-col items-center gap-4 text-center">
-              <div className="text-[24px] font-bold text-black uppercase tracking-tight">
-                Your Preview is Ready!
-              </div>
-              <p className="text-[15px] text-black/60">
-                We've analyzed your website and created a personalized AI assistant.
-              </p>
-              <Button
-                onClick={() => previewUrl && window.open(previewUrl, '_blank')}
-                className="h-16 rounded-none bg-black px-10 text-[18px] font-black uppercase tracking-widest text-white hover:bg-black/90 transition-all w-full"
+        <div className="flex flex-col items-center justify-center p-8 min-h-[400px]">
+          <OrbitingSquares isSuccess={isSuccess} />
+
+          <AnimatePresence mode="wait">
+            {!isSuccess ? (
+              <motion.div
+                key="loading-text"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+                className="text-center"
               >
-                View Preview <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-              <p className="text-[13px] text-black/40 font-medium">
-                Preview expires in 10 minutes
-              </p>
-              <Button
-                variant="ghost"
-                onClick={() => {
-                  setPreviewUrl(null);
-                  setStep(1);
-                  form1.reset();
-                  form2.reset();
-                }}
-                className="text-[11px] font-bold uppercase tracking-widest text-black/40 hover:text-black mt-2"
+                <h2 className="text-[28px] font-black uppercase tracking-tighter mb-4 animate-pulse">GENERATING PREVIEW...</h2>
+                <p className="text-[16px] text-black/60 font-medium">Please wait while we prepare your demo.</p>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="success-content"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="w-full flex flex-col items-center gap-4 mt-2"
               >
-                Create another preview
-              </Button>
-            </div>
-          )}
+                <motion.div 
+                  className="text-[24px] font-bold text-black uppercase tracking-tight"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                >
+                  Your Preview is Ready!
+                </motion.div>
+                
+                <motion.p 
+                  className="text-center text-[15px] text-black/60"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                >
+                  We've analyzed your website and created a personalized AI assistant.
+                </motion.p>
+                
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.5 }}
+                  className="w-full"
+                >
+                  <Button
+                    onClick={() => previewUrl && window.open(previewUrl, '_blank')}
+                    className="h-16 rounded-none bg-black px-10 text-[18px] font-black uppercase tracking-widest text-white hover:bg-black/90 transition-all w-full"
+                  >
+                    View Preview <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </motion.div>
+                
+                <motion.div 
+                  className="text-[13px] text-black/40 font-medium"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.6 }}
+                >
+                  Preview expires in 10 minutes
+                </motion.div>
+                
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.7 }}
+                >
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setPreviewUrl(null);
+                      setStep(1);
+                      form1.reset();
+                      form2.reset();
+                    }}
+                    className="text-[11px] font-bold uppercase tracking-widest text-black/40 hover:text-black mt-2"
+                  >
+                    Create another preview
+                  </Button>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     );
